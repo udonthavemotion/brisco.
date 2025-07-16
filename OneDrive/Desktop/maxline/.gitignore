@@ -42,5 +42,11 @@ package.json
 # System files to ignore
 -1.14-windows.xml
 
+# Large files
+*.zip
+*.rar
+*.tar.gz
+*.7z
+
 # Only keep our project files
 # Everything else is ignored by default 
