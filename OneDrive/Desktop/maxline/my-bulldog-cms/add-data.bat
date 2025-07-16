@@ -1,0 +1,39 @@
+@echo off
+echo Starting data population...
+
+echo Adding Joker...
+curl -X POST http://localhost:1337/api/studs -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"Joker\",\"age\":\"4 years\",\"status\":\"Available\",\"fee\":4500,\"description\":\"Key stud in our lineup. Movie villain themed bloodline with proven genetics.\",\"bloodlines\":\"Madline Foundation\",\"specialties\":\"Champion Bloodlines, Proven Producer\",\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding Hannibal...
+curl -X POST http://localhost:1337/api/studs -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"Hannibal\",\"age\":\"5 years\",\"status\":\"Available\",\"fee\":5000,\"description\":\"Foundational male for our breeding program. Strong producer with excellent structure.\",\"bloodlines\":\"Madline Foundation\",\"specialties\":\"Foundational Genetics, Structure\",\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding American Psycho...
+curl -X POST http://localhost:1337/api/studs -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"American Psycho\",\"age\":\"4 years\",\"status\":\"Available\",\"fee\":4800,\"description\":\"Core bloodline producer. Part of our elite breeding program.\",\"bloodlines\":\"Madline Core, Champion Lines\",\"specialties\":\"Exotic Colors, Champion Bloodlines\",\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding The Batman...
+curl -X POST http://localhost:1337/api/studs -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"The Batman\",\"age\":\"3 years\",\"status\":\"Available\",\"fee\":5500,\"description\":\"Strong young stud with excellent genetics and structure. Part of our movie-themed bloodline.\",\"bloodlines\":\"Madline Foundation, Dark Knight Lines\",\"specialties\":\"Champion Bloodlines, Strong Structure\",\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding Metallica...
+curl -X POST http://localhost:1337/api/studs -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"Metallica\",\"age\":\"4 years\",\"status\":\"Busy\",\"fee\":6000,\"description\":\"Premium stud with exceptional genetics. Currently engaged in breeding program.\",\"bloodlines\":\"Metal Foundation, Champion Lines\",\"specialties\":\"Premium Genetics, Proven Producer\",\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding Ratatouille's Production...
+curl -X POST http://localhost:1337/api/studs -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"Ratatouille's Production\",\"age\":\"3 years\",\"status\":\"Available\",\"fee\":5200,\"description\":\"Young energetic stud with excellent production potential. Part of our emerging bloodline.\",\"bloodlines\":\"Production Lines, French Foundation\",\"specialties\":\"High Energy, Production Potential\",\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding Bella...
+curl -X POST http://localhost:1337/api/puppies -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"Bella\",\"status\":\"Available\",\"date_of_birth\":\"2024-05-15\",\"price\":2500,\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding Max...
+curl -X POST http://localhost:1337/api/puppies -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"Max\",\"status\":\"Available\",\"date_of_birth\":\"2024-04-20\",\"price\":3000,\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding Luna...
+curl -X POST http://localhost:1337/api/puppies -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"Luna\",\"status\":\"Reserved\",\"date_of_birth\":\"2024-06-10\",\"price\":2800,\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding Charlie...
+curl -X POST http://localhost:1337/api/puppies -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"Charlie\",\"status\":\"Available\",\"date_of_birth\":\"2024-05-25\",\"price\":2700,\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Adding Daisy...
+curl -X POST http://localhost:1337/api/puppies -H "Content-Type: application/json" -d "{\"data\":{\"name\":\"Daisy\",\"status\":\"Available\",\"date_of_birth\":\"2024-06-01\",\"price\":2600,\"publishedAt\":\"2025-01-15T00:00:00.000Z\"}}"
+
+echo Data population complete!
+echo You can now go to http://localhost:1337/admin to see your data
+pause 

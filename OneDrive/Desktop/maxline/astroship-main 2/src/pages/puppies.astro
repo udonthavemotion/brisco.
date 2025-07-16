@@ -1,0 +1,207 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Container from "@/components/container.astro";
+import Sectionhead from "@/components/sectionhead.astro";
+import { getPuppies, formatPrice, formatDate, getImageUrl, type Puppy } from "@/lib/strapi";
+
+// Fetch puppies from Strapi
+let puppies: Puppy[] = [];
+let error: string | null = null;
+
+try {
+  const response = await getPuppies({
+    populate: 'images',
+    sort: 'createdAt:desc',
+    pageSize: 50, // Adjust as needed
+  });
+  puppies = response.data;
+} catch (err) {
+  console.error('Error fetching puppies:', err);
+  error = 'Failed to load puppies. Please try again later.';
+  
+  // Fallback to mock data for development
+  puppies = [
+    {
+      id: 1,
+      name: 'Scarlett',
+      status: 'Available',
+      date_of_birth: '2023-10-01',
+      price: 5500,
+      gender: 'Female',
+      color: 'Red',
+      weight: '15 lbs',
+      description: 'Beautiful red female puppy',
+      parents: 'Joker x Harley',
+      healthrecords: 'Up to date on all vaccinations',
+      images: [],
+      createdAt: '2023-10-01T00:00:00.000Z',
+      updatedAt: '2023-10-01T00:00:00.000Z',
+      publishedAt: '2023-10-01T00:00:00.000Z'
+    },
+    {
+      id: 2,
+      name: 'Max',
+      status: 'Available',
+      date_of_birth: '2023-09-15',
+      price: 6000,
+      gender: 'Male',
+      color: 'Blue',
+      weight: '18 lbs',
+      description: 'Stunning blue male puppy',
+      parents: 'Hannibal x Luna',
+      healthrecords: 'Up to date on all vaccinations',
+      images: [],
+      createdAt: '2023-09-15T00:00:00.000Z',
+      updatedAt: '2023-09-15T00:00:00.000Z',
+      publishedAt: '2023-09-15T00:00:00.000Z'
+    }
+  ];
+}
+---
+
+<Layout title="Available Puppies">
+  <Container>
+    <Sectionhead>
+      <Fragment slot="title">Available Puppies</Fragment>
+      <Fragment slot="desc">
+        Browse our healthy English Bulldog puppies ready for adoption
+      </Fragment>
+    </Sectionhead>
+    
+    <main class="mt-16">
+      <!-- Error Message -->
+      {error && (
+        <div class="mb-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <p class="text-yellow-800">
+            <strong>Note:</strong> {error} Showing sample data for demonstration.
+          </p>
+        </div>
+      )}
+
+      <!-- Filter Controls -->
+      <div class="mb-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <button 
+          id="filter-all"
+          class="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 font-medium"
+          aria-label="Show all puppies"
+        >
+          All Puppies
+        </button>
+        <button 
+          id="filter-available"
+          class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors duration-200 font-medium"
+          aria-label="Show available puppies only"
+        >
+          Available Only
+        </button>
+        <button 
+          id="filter-reserved"
+          class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors duration-200 font-medium"
+          aria-label="Show reserved puppies only"
+        >
+          Reserved Only
+        </button>
+      </div>
+
+      <!-- Puppies Grid -->
+      <div id="puppies-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        {puppies.map((puppy) => (
+          <article 
+            class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 puppy-card"
+            data-status={puppy.status}
+          >
+            <div class="photo-hover relative">
+              <img 
+                src={puppy.images && puppy.images.length > 0 ? getImageUrl(puppy.images[0], 'medium') : 'https://placehold.co/400x300?text=No+Image'}
+                alt={puppy.images && puppy.images.length > 0 && puppy.images[0].alternativeText ? puppy.images[0].alternativeText : `${puppy.name} puppy`}
+                loading="lazy"
+                class="w-full h-48 object-cover"
+              />
+              <!-- Hover overlay text -->
+              <div class="overlay-text">
+                <h3 class="text-xl font-bold">{puppy.name}</h3>
+                <p class="text-lg">{formatPrice(puppy.price)}</p>
+              </div>
+            </div>
+            
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-xl font-bold text-gray-900">{puppy.name}</h3>
+                <span class={`px-3 py-1 rounded-full text-sm font-medium ${
+                  puppy.status === 'Available' 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {puppy.status}
+                </span>
+              </div>
+              
+              <div class="space-y-2 mb-4">
+                <p class="text-gray-600">
+                  <strong>Date of Birth:</strong> {formatDate(puppy.date_of_birth)}
+                </p>
+                <p class="text-gray-600">
+                  <strong>Price:</strong> {formatPrice(puppy.price)}
+                </p>
+                <p class="text-gray-600">
+                  <strong>Gender:</strong> {puppy.gender}
+                </p>
+                <p class="text-gray-600">
+                  <strong>Color:</strong> {puppy.color}
+                </p>
+              </div>
+              
+              <a 
+                href={`/contact?puppy=${encodeURIComponent(puppy.name)}`}
+                class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200 font-medium text-center block"
+                aria-label={`Inquire about ${puppy.name}`}
+              >
+                Inquire Now
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </main>
+  </Container>
+</Layout>
+
+<script>
+  // Client-side filtering functionality
+  function initializeFilters() {
+    const filterButtons = document.querySelectorAll('[id^="filter-"]');
+    const puppyCards = document.querySelectorAll('.puppy-card');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Update button states
+        filterButtons.forEach(btn => {
+          btn.classList.remove('bg-blue-500', 'text-white');
+          btn.classList.add('bg-gray-200', 'text-gray-700');
+        });
+        button.classList.add('bg-blue-500', 'text-white');
+        button.classList.remove('bg-gray-200', 'text-gray-700');
+        
+        // Filter puppies
+        const filter = button.id.replace('filter-', '');
+        
+        puppyCards.forEach(card => {
+          const status = card.getAttribute('data-status');
+          
+          if (filter === 'all') {
+            (card as HTMLElement).style.display = 'block';
+          } else if (filter === 'available' && status === 'Available') {
+            (card as HTMLElement).style.display = 'block';
+          } else if (filter === 'reserved' && status === 'Reserved') {
+            (card as HTMLElement).style.display = 'block';
+          } else {
+            (card as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    });
+  }
+  
+  // Initialize filters when DOM is loaded
+  document.addEventListener('DOMContentLoaded', initializeFilters);
+</script> 

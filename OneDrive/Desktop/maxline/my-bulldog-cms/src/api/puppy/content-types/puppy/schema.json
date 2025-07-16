@@ -1,0 +1,69 @@
+{
+  "kind": "collectionType",
+  "collectionName": "puppies",
+  "info": {
+    "singularName": "puppy",
+    "pluralName": "puppies",
+    "displayName": "Puppy",
+    "description": "Collection for puppy entries with complete breeding information"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "maxLength": 255,
+      "required": true
+    },
+    "price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "date_of_birth": {
+      "type": "date",
+      "required": true
+    },
+    "gender": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "Male",
+        "Female"
+      ]
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "color": {
+      "type": "string",
+      "maxLength": 100,
+      "required": false
+    },
+    "weight": {
+      "type": "decimal",
+      "required": false,
+      "min": 0
+    },
+    "parents": {
+      "type": "string",
+      "maxLength": 500,
+      "required": false
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "healthrecords": {
+      "type": "text",
+      "required": false
+    }
+  }
+}

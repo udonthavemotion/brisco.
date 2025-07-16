@@ -1,0 +1,46 @@
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+
+# VS Code
+.vscode/
+.cursor/
+
+# User directories and system files
+AppData/
+Intel/
+Contacts/
+Downloads/
+Favorites/
+Links/
+Music/
+Videos/
+Saved Games/
+Searches/
+NTUSER.DAT*
+ntuser.dat*
+ntuser.ini
+.android/
+.cache/
+.dbus-keyrings/
+.gitconfig
+.lesshst
+.node_repl_history
+.yarnrc
+cHINA/
+my-project/
+node_modules/
+package-lock.json
+package.json
+
+# System files to ignore
+-1.14-windows.xml
+
+# Only keep our project files
+# Everything else is ignored by default 

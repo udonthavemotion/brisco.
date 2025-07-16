@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "studs",
+  "info": {
+    "singularName": "stud",
+    "pluralName": "studs",
+    "displayName": "Stud",
+    "description": "Collection for stud entries with name, age, status, fee, description, bloodlines, specialties, and multiple images"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "age": {
+      "type": "string"
+    },
+    "fee": {
+      "type": "decimal"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "bloodlines": {
+      "type": "text"
+    },
+    "specialties": {
+      "type": "text"
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": false
+    }
+  }
+}
