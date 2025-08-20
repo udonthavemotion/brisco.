@@ -1,29 +1,70 @@
 {
   "name": "Brisco Streetwear - Be Your Own Light",
   "short_name": "Brisco",
-  "description": "Gothic luxury streetwear meets urban rebellion. Limited drops and exclusive designs.",
+  "description": "Gothic luxury streetwear meets urban rebellion. Be your own light. Exclusive drops coming August 2025.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#f5f5f5",
   "orientation": "portrait-primary",
-  "categories": ["fashion", "shopping", "lifestyle"],
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "scope": "/",
   "lang": "en",
+  "categories": ["shopping", "lifestyle", "fashion"],
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "/favicons/favicon-16x16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    },
+    {
+      "src": "/favicons/favicon-32x32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "/favicons/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicons/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicons/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicons/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicons/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
     }
   ],
-  "screenshots": [
+  "shortcuts": [
     {
-      "src": "/images/fatlil.2_1755650727_3702989146305948234_305151088.jpg",
-      "sizes": "1080x1920",
-      "type": "image/jpeg",
-      "form_factor": "narrow",
-      "label": "Brisco streetwear collection"
+      "name": "Shop Collection",
+      "short_name": "Shop",
+      "description": "Browse the Be Your Own Light collection",
+      "url": "/#products",
+      "icons": [
+        {
+          "src": "/favicons/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
-  ]
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }
