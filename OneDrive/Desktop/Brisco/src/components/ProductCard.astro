@@ -1,4 +1,4 @@
-<!-- BRISCO BYOL title update (non-breaking), 2024-12-19 -->
+<!-- BRISCO Be Your Own Light (Thibodaux-native tone update), 2024-12-19 -->
 ---
 export interface Props {
   id: number;
@@ -15,10 +15,7 @@ const { id, name, price, frontImg, backImg, desc } = Astro.props;
 <div class="product-card" data-product-id={id}>
   <div class="limited-drop">Limited Drop</div>
   <div class="limited-batch">LIMITED: Small-batch</div>
-  <div class="scarcity-timer" data-product-id={id}>
-    <span class="timer-label">Limited:</span>
-    <span class="timer-count">100 units left</span>
-  </div>
+
   
   <div class="product-image-container">
     <img 
@@ -43,32 +40,21 @@ const { id, name, price, frontImg, backImg, desc } = Astro.props;
     <button 
       class="btn btn-primary add-to-cart"
       data-product='{JSON.stringify({ id, name, price, frontImg })}'
+      onclick={`window.briscoCart && window.briscoCart.addItem(${JSON.stringify({ id, name, price, frontImg })})`}
       aria-label={`Add ${name} to cart`}
     >
-      <!-- GHL Stripe: Use GoHighLevel funnels for checkout -->
       Add to Cart
     </button>
   </div>
 </div>
 
 <script>
-  // Add to cart functionality - will be enhanced by cart.js
+  // Simple visual feedback for add to cart
   document.addEventListener('DOMContentLoaded', () => {
     const addToCartButtons = document.querySelectorAll('.add-to-cart');
     
     addToCartButtons.forEach(button => {
       button.addEventListener('click', (e) => {
-        const productDataStr = button.getAttribute('data-product');
-        if (!productDataStr) return;
-        const productData = JSON.parse(productDataStr);
-        
-        // Dispatch custom event for cart system
-        const event = new CustomEvent('addToCart', {
-          detail: productData
-        });
-        
-        document.dispatchEvent(event);
-        
         // Visual feedback
         const originalText = button.textContent;
         button.textContent = 'Added!';
@@ -82,3 +68,88 @@ const { id, name, price, frontImg, backImg, desc } = Astro.props;
     });
   });
 </script>
+
+<style>
+  /* Mobile-specific ProductCard optimizations */
+  @media (max-width: 768px) {
+    .product-card {
+      margin: 0 auto;
+      max-width: 350px;
+    }
+    
+    .product-image-container {
+      height: 380px;
+    }
+    
+    .product-info {
+      padding: 1.25rem;
+    }
+    
+    .product-name {
+      font-size: 1.1rem;
+      line-height: 1.4;
+    }
+    
+    .product-price {
+      font-size: 1.3rem;
+    }
+    
+    .product-description {
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    
+    .add-to-cart {
+      width: 100%;
+      padding: 0.9rem;
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .product-card {
+      max-width: 320px;
+    }
+    
+    .product-image-container {
+      height: 350px;
+    }
+    
+    .product-info {
+      padding: 1rem;
+    }
+    
+    .product-name {
+      font-size: 1rem;
+    }
+    
+    .product-price {
+      font-size: 1.2rem;
+    }
+    
+    .product-description {
+      font-size: 0.8rem;
+    }
+    
+    .add-to-cart {
+      padding: 0.8rem;
+      font-size: 0.75rem;
+    }
+    
+    .scarcity-timer {
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
+    }
+    
+    .limited-drop {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+    }
+    
+    .limited-batch {
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
+      top: 2.8rem;
+    }
+  }
+</style>

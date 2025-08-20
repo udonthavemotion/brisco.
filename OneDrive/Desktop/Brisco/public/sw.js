@@ -10,7 +10,7 @@ self.addEventListener('fetch', () => {
 	// passthrough fetch; no caching for now
 });
 
-// Brisco Service Worker - Minimal PWA Support
+// BRISC Service Worker - Minimal PWA Support
 // Scientifically optimized for streetwear site performance
 
 const CACHE_NAME = 'brisco-v1';
@@ -25,11 +25,11 @@ const STATIC_ASSETS = [
 
 // Install event - cache critical assets
 self.addEventListener('install', (event) => {
-  console.log('[Brisco SW] Installing...');
+  console.log('[BRISC SW] Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[Brisco SW] Caching critical assets');
+        console.log('[BRISC SW] Caching critical assets');
         return cache.addAll(STATIC_ASSETS);
       })
       .then(() => self.skipWaiting())
@@ -38,14 +38,14 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean old caches
 self.addEventListener('activate', (event) => {
-  console.log('[Brisco SW] Activating...');
+  console.log('[BRISC SW] Activating...');
   event.waitUntil(
     caches.keys()
       .then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
             if (cacheName !== CACHE_NAME) {
-              console.log('[Brisco SW] Deleting old cache:', cacheName);
+              console.log('[BRISC SW] Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
           })

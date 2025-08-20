@@ -35,20 +35,25 @@ class BriscoCart {
   }
 
   addItem(product) {
+    console.log('Adding item to cart:', product);
     const existingItem = this.items.find(item => item.id === product.id);
     
     if (existingItem) {
       existingItem.quantity += 1;
+      console.log('Updated existing item quantity:', existingItem);
     } else {
-      this.items.push({
+      const newItem = {
         ...product,
         quantity: 1,
         addedAt: Date.now()
-      });
+      };
+      this.items.push(newItem);
+      console.log('Added new item:', newItem);
     }
 
     this.saveCart();
     this.updateCartUI();
+    console.log('Cart items after update:', this.items);
     this.showToast(`${product.name} added to cart!`);
     
     // Torch ignite animation
@@ -145,7 +150,14 @@ class BriscoCart {
     const cartItems = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
     
-    if (!cartItems || !cartTotal) return;
+    console.log('Updating cart drawer. Items:', this.items);
+    console.log('Cart items element:', cartItems);
+    console.log('Cart total element:', cartTotal);
+    
+    if (!cartItems || !cartTotal) {
+      console.error('Cart elements not found!');
+      return;
+    }
     
     // Update total
     cartTotal.textContent = this.getTotal().toFixed(2);
@@ -161,11 +173,14 @@ class BriscoCart {
           <p style="font-size: 0.8rem; margin-top: 0.5rem;">Add some fire to your collection</p>
         </div>
       `;
+      console.log('Cart is empty, showing empty state');
       return;
     }
     
     // Populate cart items
+    console.log('Populating cart items. Count:', this.items.length);
     this.items.forEach(item => {
+      console.log('Creating cart item for:', item);
       const cartItem = document.createElement('div');
       cartItem.className = 'cart-item';
       cartItem.innerHTML = `
@@ -181,6 +196,7 @@ class BriscoCart {
         </div>
       `;
       cartItems.appendChild(cartItem);
+      console.log('Cart item appended to container');
     });
     
     // Bind quantity controls
