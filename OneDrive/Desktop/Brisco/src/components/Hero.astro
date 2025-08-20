@@ -1,0 +1,170 @@
+---
+// Minimal hero - single centerpiece image
+const mainCenterpiece = {
+  src: '/images/fatlil.2_1755650727_3702989146314406154_305151088.jpg',
+  alt: 'Brisco Collection - Be Your Own Light'
+};
+---
+
+<section class="minimal-hero" id="home">
+  <div class="container">
+    <div class="minimal-hero-content">
+      <h1 class="minimal-brand">Brisco.</h1>
+      <p class="minimal-tagline">Be Your Own Light.</p>
+      
+      <!-- Single Centerpiece Image with Levitation -->
+      <div class="minimal-centerpiece">
+        <img 
+          src={mainCenterpiece.src} 
+          alt={mainCenterpiece.alt} 
+          width="600"
+          height="600"
+          loading="eager"
+          class="minimal-centerpiece-image"
+        />
+      </div>
+      
+      <a href="#products" class="minimal-shop-btn">
+        SHOP COLLECTION
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Minimal Hero Section */
+  .minimal-hero {
+    background: #000000;
+    color: #ffffff;
+    text-align: center;
+    padding: 4rem 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .minimal-hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+  }
+
+  .minimal-brand {
+    font-size: 3rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    margin: 0;
+    color: #ffffff;
+  }
+
+  .minimal-tagline {
+    font-size: 1rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  /* Minimal Centerpiece with Levitation */
+  .minimal-centerpiece {
+    max-width: 400px;
+    width: 100%;
+    position: relative;
+  }
+
+  .minimal-centerpiece-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    animation: levitate 3s ease-in-out infinite;
+    transition: transform 0.3s ease;
+  }
+
+  @keyframes levitate {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .minimal-centerpiece:hover .minimal-centerpiece-image {
+    transform: scale(1.02);
+  }
+
+  /* Minimal Shop Button */
+  .minimal-shop-btn {
+    padding: 1rem 2rem;
+    background: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.2s ease;
+    border-radius: 0;
+  }
+
+  .minimal-shop-btn:hover {
+    background: #ffffff;
+    color: #000000;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .minimal-hero {
+      padding: 3rem 0;
+    }
+    
+    .minimal-brand {
+      font-size: 2.5rem;
+    }
+    
+    .minimal-tagline {
+      font-size: 0.9rem;
+    }
+    
+    .minimal-centerpiece {
+      max-width: 300px;
+    }
+    
+    .minimal-shop-btn {
+      padding: 0.875rem 1.5rem;
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .minimal-brand {
+      font-size: 2rem;
+    }
+    
+    .minimal-tagline {
+      font-size: 0.8rem;
+    }
+    
+    .minimal-centerpiece {
+      max-width: 250px;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .minimal-centerpiece-image {
+      animation: none;
+    }
+    
+    .minimal-centerpiece:hover .minimal-centerpiece-image {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Minimal hero - no carousel needed
+  console.log('[Brisco] Minimal hero loaded');
+</script>
