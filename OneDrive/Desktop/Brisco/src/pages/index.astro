@@ -216,44 +216,33 @@ const siteDescription = 'Brisco Exclusive Access: Limited drops coming August 20
       </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Minimal Footer -->
     <footer class="footer" id="contact">
       <div class="container">
         <div class="footer-content">
-          <div class="footer-section">
-            <h3>Stay Connected</h3>
-            <p>Join the movement. Be the first to know about new drops.</p>
-            
-            <!-- Email Signup -->
+          <div class="footer-brand">
+            <h3>Brisco.</h3>
+          </div>
+          
+          <div class="footer-newsletter">
             <div class="email-signup">
-              <!-- GHL Email Integration: Connect GoHighLevel for email capture -->
               <input 
                 type="email" 
-                placeholder="Enter your email" 
+                placeholder="Your email" 
                 class="email-input"
                 id="email-signup"
                 aria-label="Email address for newsletter signup"
               />
               <button class="btn btn-primary" id="signup-btn">
-                Subscribe
+                SUBSCRIBE
               </button>
             </div>
           </div>
           
-          <div class="footer-section">
-            <h3>Follow the Light</h3>
-            <div class="social-links">
-              <a href="https://instagram.com/khalilbrisco8" class="social-link" target="_blank" rel="noopener noreferrer">
-                @khalilbrisco8
-              </a>
-            </div>
-            
-            <div style="margin-top: 2rem; color: var(--text-gray); font-size: 0.9rem;">
-              <p>&copy; 2024 Brisco Streetwear. All rights reserved.</p>
-              <p style="margin-top: 0.5rem;">
-                Designed for rebels. Built for legends.
-              </p>
-            </div>
+          <div class="footer-social">
+            <a href="https://instagram.com/fatlil.2" class="social-link" target="_blank" rel="noopener noreferrer">
+              @fatlil.2
+            </a>
           </div>
         </div>
       </div>
@@ -261,8 +250,21 @@ const siteDescription = 'Brisco Exclusive Access: Limited drops coming August 20
   </div> <!-- End store-content -->
 
   <!-- Scripts -->
-  <script src="/src/scripts/cart.js"></script>
-  <script type="module" src="/src/scripts/password.js"></script>
+  <script is:inline src="/cart.js"></script>
+  <script is:inline src="/password.js"></script>
+  
+  <!-- Service Worker Registration for PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('[Brisco] Service Worker registered:', registration);
+        })
+        .catch((error) => {
+          console.log('[Brisco] Service Worker registration failed:', error);
+        });
+    }
+  </script>
   
   <!-- Minimal Analytics -->
   <script>

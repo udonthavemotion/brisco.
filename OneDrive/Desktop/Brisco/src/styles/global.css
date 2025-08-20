@@ -449,7 +449,7 @@ section {
   line-height: 1.8;
 }
 
-/* Footer */
+/* Minimal Footer */
 .footer {
   background: rgba(0,0,0,0.9);
   padding: 2rem 0;
@@ -457,21 +457,29 @@ section {
 }
 
 .footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  gap: 2rem;
 }
 
-.footer-section h3 {
-  margin-bottom: 1rem;
+.footer-brand h3 {
+  margin: 0;
   color: var(--accent-light);
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+
+.footer-newsletter {
+  flex: 1;
+  max-width: 400px;
 }
 
 .email-signup {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
+  align-items: center;
 }
 
 .email-input {
@@ -488,10 +496,8 @@ section {
   color: var(--text-gray);
 }
 
-.social-links {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+.footer-social {
+  text-align: right;
 }
 
 .social-link {
@@ -499,6 +505,7 @@ section {
   text-decoration: none;
   transition: color 0.3s ease;
   font-weight: 500;
+  font-size: 1rem;
 }
 
 .social-link:hover {
@@ -1112,3 +1119,53 @@ section {
 }
 
 /* Old responsive styles removed - using minimal design */
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .footer-brand h3 {
+    font-size: 1.25rem;
+  }
+  
+  .footer-newsletter {
+    max-width: 100%;
+  }
+  
+  .email-signup {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .footer-social {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 1.5rem 0;
+  }
+  
+  .footer-content {
+    gap: 1rem;
+  }
+  
+  .footer-brand h3 {
+    font-size: 1.1rem;
+  }
+  
+  .email-input {
+    padding: 0.625rem;
+    font-size: 0.9rem;
+  }
+  
+  .btn-primary {
+    padding: 0.625rem 1rem;
+    font-size: 0.85rem;
+  }
+}

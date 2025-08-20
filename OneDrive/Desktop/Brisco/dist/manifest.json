@@ -12,16 +12,6 @@
   "categories": ["shopping", "lifestyle", "fashion"],
   "icons": [
     {
-      "src": "/favicons/favicon-16x16.png",
-      "type": "image/png",
-      "sizes": "16x16"
-    },
-    {
-      "src": "/favicons/favicon-32x32.png",
-      "type": "image/png",
-      "sizes": "32x32"
-    },
-    {
       "src": "/favicons/android-chrome-192x192.png",
       "type": "image/png",
       "sizes": "192x192",
@@ -44,11 +34,6 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
-    },
-    {
-      "src": "/favicons/apple-touch-icon.png",
-      "type": "image/png",
-      "sizes": "180x180"
     }
   ],
   "shortcuts": [
