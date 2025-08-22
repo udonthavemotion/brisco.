@@ -1,0 +1,429 @@
+---
+const URL = "https://prod.spline.design/M1xfE4sHHL-Zx4C2/scene.splinecode";
+
+/**
+ * Props (optional):
+ * - contained: boolean = false  -> if true, renders a 16:9 letterboxed frame instead of full-bleed
+ * - height: string = "100svh"   -> CSS height for full-bleed mode
+ */
+const { contained = false, height = "100svh" } = Astro.props;
+---
+
+<style>
+  /* Import cosmic fonts */
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+  .hero {
+    position: relative;
+    width: 100vw;
+    height: var(--hero-h);
+    overflow: hidden;
+    background: #050509;
+  }
+  .viewer {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+    z-index: 1; /* Ensure viewer is behind overlay but visible */
+    /* Ensure proper canvas rendering */
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
+  /* Contained (letterboxed) variant */
+  .frame-wrap {
+    position: relative;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    padding: clamp(16px, 4vw, 48px);
+    background: #050509;
+  }
+  .frame {
+    position: relative;
+    aspect-ratio: 16/9;
+    width: min(1200px, 100%);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 80px rgba(0,0,0,.45);
+  }
+
+  /* IMPORTANT: never apply CSS transform/zoom on the viewer; let it render true size */
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    pointer-events: none; /* Allow Spline interactions while keeping overlay content interactive */
+    padding: clamp(16px, 4vw, 48px);
+  }
+
+  /* Enhanced hero content wrapper */
+  .hero-cosmic-wrapper {
+    max-width: 600px;
+    width: 100%;
+    
+    /* Fade-in animation on load */
+    opacity: 0;
+    animation: cosmicFadeIn 1.5s ease-out 0.5s forwards;
+    
+    /* Transform for smooth entrance */
+    transform: translateY(20px);
+    
+    /* Enable pointer events for interactive content */
+    pointer-events: auto;
+  }
+
+  /* Logo video cosmic enhancement */
+  .hero-logo-video {
+    display: block;
+    width: clamp(180px, 25vw, 320px);
+    height: auto;
+    margin: 0 auto clamp(2rem, 6vw, 3rem);
+    
+    /* Enhanced cosmic glow */
+    filter: 
+      drop-shadow(0 0 20px rgba(147, 51, 234, 0.4))
+      drop-shadow(0 0 40px rgba(147, 51, 234, 0.2))
+      brightness(1.1);
+    
+    /* Smooth scaling on hover */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+  }
+
+  .hero-logo-video:hover {
+    transform: scale(1.02);
+    filter: 
+      drop-shadow(0 0 25px rgba(147, 51, 234, 0.6))
+      drop-shadow(0 0 50px rgba(147, 51, 234, 0.3))
+      brightness(1.15);
+  }
+
+  /* Enhanced CTA container with cosmic spacing */
+  .hero-cta-container {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 3vw, 1.5rem);
+    align-items: center;
+    justify-content: center;
+    margin-top: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  /* Glass Pill Subtle Glow CTA styling */
+  .floating-cta {
+    /* Glass pill base styling */
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    
+    /* Typography */
+    font-family: 'Orbitron', 'Rajdhani', system-ui, -apple-system, sans-serif;
+    font-size: clamp(0.75rem, 1.8vw, 0.875rem);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    
+    /* Glass effect */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    
+    /* Shadow and glow */
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+    
+    /* Transitions */
+    transition: transform 150ms ease-out;
+    cursor: pointer;
+    
+    /* Prevent text selection */
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Glass pill glow effect */
+  .floating-cta:before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 9999px;
+    background: radial-gradient(60% 140% at 50% 0%,
+      rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 60%);
+    opacity: 0.25;
+    transition: opacity 0.2s ease;
+  }
+
+  /* Hover effects */
+  .floating-cta:hover {
+    transform: scale(1.03);
+  }
+
+  .floating-cta:hover:before {
+    opacity: 0.4;
+  }
+
+  /* Active/touch states */
+  .floating-cta:active {
+    transform: scale(0.98);
+  }
+
+  /* Focus styles for accessibility */
+  .floating-cta:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7), 
+                0 0 0 6px rgba(139, 92, 246, 0.35);
+  }
+
+  /* Ensure text is above the glow effect */
+  .floating-cta span {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Cosmic fade-in animation */
+  @keyframes cosmicFadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    50% {
+      opacity: 0.7;
+      transform: translateY(10px) scale(0.98);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Mobile Portrait (up to 480px) */
+  @media (max-width: 30rem) {
+    .hero {
+      min-height: 100vh;
+      min-height: 100svh; /* Use modern viewport units */
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .overlay {
+      padding: 1rem;
+      /* Ensure content fills mobile viewport */
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+    
+    .hero-logo-video {
+      width: clamp(140px, 35vw, 200px);
+      margin-bottom: 1.5rem;
+    }
+    
+    .hero-cta-container {
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    
+    .floating-cta {
+      font-size: 0.75rem;
+      padding: 0.625rem 1.25rem;
+      min-height: 44px;
+    }
+  }
+
+  /* Mobile Landscape & Large Mobile (481px - 767px) */
+  @media (min-width: 30.0625rem) and (max-width: 47.9375rem) {
+    .hero {
+      min-height: 100vh;
+      min-height: 100svh;
+      width: 100vw;
+    }
+    
+    .overlay {
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+    
+    .hero-cta-container {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.875rem;
+    }
+    
+    .floating-cta {
+      font-size: 0.8125rem;
+      padding: 0.5625rem 1.125rem;
+      min-width: 110px;
+      min-height: 34px;
+    }
+  }
+
+  /* Tablet (768px+) */
+  @media (min-width: 48rem) {
+    .hero-cta-container {
+      flex-direction: row;
+      gap: 1rem;
+    }
+    
+    .floating-cta {
+      font-size: 0.875rem;
+      padding: 0.625rem 1.25rem;
+      min-height: 36px;
+    }
+  }
+
+  /* Desktop (1024px+) */
+  @media (min-width: 64rem) {
+    .hero-logo-video {
+      width: clamp(240px, 20vw, 320px);
+    }
+    
+    .floating-cta {
+      font-size: 0.875rem;
+      padding: 0.625rem 1.25rem;
+      min-height: 36px;
+    }
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-cosmic-wrapper {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    
+    .floating-cta,
+    .hero-logo-video {
+      transition: none;
+    }
+    
+    .floating-cta:hover {
+      transform: none;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .floating-cta {
+      border-width: 2px;
+      border-color: currentColor;
+    }
+    
+    .primary-cta,
+    .secondary-cta {
+      -webkit-text-fill-color: unset;
+      background: none;
+      color: white;
+    }
+  }
+
+  /* Touch device optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    .floating-cta {
+      min-height: 52px; /* Larger touch targets */
+    }
+    
+    .floating-cta:hover {
+      /* Disable hover effects on touch devices */
+      transform: none;
+      text-shadow: inherit;
+      box-shadow: inherit;
+    }
+  }
+</style>
+
+<!-- Preload the scene for faster first paint (optional but recommended) -->
+<link rel="preload" href={URL} as="fetch" crossorigin>
+
+{contained ? (
+  <div class="frame-wrap">
+    <div class="frame">
+      <spline-viewer
+        class="viewer"
+        url={URL}
+        loading="eager"
+      ></spline-viewer>
+    </div>
+  </div>
+) : (
+  <div class="hero" style={{ "--hero-h": height }}>
+    <spline-viewer
+      class="viewer"
+      url={URL}
+      loading="eager"
+    ></spline-viewer>
+    <div class="overlay">
+      <div class="hero-cosmic-wrapper">
+        <!-- ZeroMotion Logo Video -->
+        <div class="flex justify-center">
+          <video 
+            class="hero-logo-video"
+            autoplay 
+            muted 
+            loop 
+            playsinline
+            preload="metadata"
+          >
+            <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm">
+            <!-- Fallback for browsers that don't support WebM -->
+            <source src="/media/ZeroMotion-Transparent.mov" type="video/mp4">
+          </video>
+        </div>
+        
+        <div class="hero-cta-container">
+          <a 
+            href="/contact" 
+            class="floating-cta"
+          >
+            <span class="relative z-10">CONTACT NOW</span>
+          </a>
+          <a 
+            href="/pricing" 
+            class="floating-cta"
+          >
+            <span class="relative z-10">SEE PRICING</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+<script>
+  // Import the Spline viewer on the client side only
+  import "@splinetool/viewer";
+
+  // Debug the Spline viewer loading
+  document.addEventListener('DOMContentLoaded', () => {
+    const viewer = document.querySelector('spline-viewer');
+    if (viewer) {
+      console.log('Spline viewer element found:', viewer);
+      
+      viewer.addEventListener('load', () => {
+        console.log('Spline scene loaded successfully');
+      });
+      
+      viewer.addEventListener('error', (error) => {
+        console.error('Spline scene failed to load:', error);
+      });
+      
+      // Check if the viewer has loaded after a delay
+      setTimeout(() => {
+        console.log('Viewer URL:', viewer.getAttribute('url'));
+        console.log('Viewer dimensions:', viewer.offsetWidth, 'x', viewer.offsetHeight);
+        console.log('Viewer style:', window.getComputedStyle(viewer));
+      }, 2000);
+    } else {
+      console.error('Spline viewer element not found');
+    }
+  });
+</script>

@@ -1,0 +1,49 @@
+---
+// SplineViewer.astro - Reusable Spline Viewer Component
+export interface Props {
+  url: string;
+  loading?: 'eager' | 'lazy';
+  class?: string;
+  style?: string;
+  title?: string;
+}
+
+const { 
+  url, 
+  loading = 'lazy', 
+  class: className = '', 
+  style = '',
+  title = 'Spline 3D Scene'
+} = Astro.props;
+---
+
+<spline-viewer 
+  url={url}
+  loading={loading}
+  class={className}
+  style={style}
+  title={title}
+></spline-viewer>
+
+<script is:inline type="module" src="https://unpkg.com/@splinetool/viewer@1.10.51/build/spline-viewer.js"></script>
+
+<style>
+  spline-viewer {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+    /* Enhanced performance settings */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    /* Better rendering on high-DPI displays */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    /* Smooth font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+</style>

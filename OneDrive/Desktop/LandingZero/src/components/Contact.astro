@@ -1,19 +1,17 @@
 ---
 // Contact.astro - Full-screen Spline Component
+import SplineViewer from './SplineViewer.astro';
 ---
 
 <!-- Full-screen Spline Component -->
 <section class="zmm-spline-wrap">
   <!-- Spline Interactive Component -->
-  <iframe
+  <SplineViewer 
+    url="https://prod.spline.design/sJNgnd62gk6NvzYE/scene.splinecode"
     class="zmm-spline"
-    src="https://my.spline.design/glassbuttonsinspiredbyreijopalmiste-srFrnLHrWsCpuduY3MW6HM0z/"
-    title="Spline — Glass Buttons Interactive Component"
+    title="Spline — Contact Page Interactive Component"
     loading="lazy"
-    allow="autoplay; fullscreen; xr-spatial-tracking"
-    allowfullscreen
-    referrerpolicy="no-referrer"
-  ></iframe>
+  />
 
   <!-- Logo Overlay -->
   <div class="zmm-logo-overlay">
@@ -45,6 +43,19 @@
     overflow: hidden;
   }
 
+  /* Mobile-specific wrapper adjustments */
+  @media (max-width: 767px) {
+    .zmm-spline-wrap {
+      /* Ensure no gaps on mobile */
+      width: 100vw;
+      height: 100vh;
+      height: 100svh;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+  }
+
   .zmm-spline {
     position: absolute;
     inset: 0;
@@ -54,6 +65,28 @@
     display: block;
     /* Full pointer events for Spline interactions */
     pointer-events: auto;
+  }
+
+  /* Desktop scaling for Spline */
+  @media (min-width: 768px) {
+    .zmm-spline {
+      width: 100%;
+      height: 100%;
+      transform: scale(1);
+      transform-origin: center center;
+    }
+  }
+
+  /* Mobile-specific Spline scaling */
+  @media (max-width: 767px) {
+    .zmm-spline {
+      width: 150%; /* Zoom out to show more of the component */
+      height: 150%;
+      transform: scale(0.67); /* Scale down to fit viewport */
+      transform-origin: center center;
+      left: -25%; /* Center the scaled content */
+      top: -25%;
+    }
   }
 
   .zmm-logo-overlay {
@@ -102,6 +135,15 @@
     
     .zmm-logo-video {
       width: clamp(60px, 15vw, 80px);
+    }
+    
+    /* Extra zoom out for very small screens */
+    .zmm-spline {
+      width: 180%; /* Even more zoom out for small screens */
+      height: 180%;
+      transform: scale(0.56); /* Smaller scale */
+      left: -40%; /* Adjust centering */
+      top: -40%;
     }
   }
 </style>

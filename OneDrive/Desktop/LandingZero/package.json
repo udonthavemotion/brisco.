@@ -5,13 +5,24 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro check && astro build",
     "preview": "astro preview",
+    "check": "astro check",
     "astro": "astro"
   },
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
-    "astro": "^4.0.0",
     "@astrojs/tailwind": "^5.0.0",
+    "@splinetool/runtime": "^1.10.51",
+    "@splinetool/viewer": "^1.10.51",
+    "astro": "^4.0.0",
     "tailwindcss": "^3.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.3.0",
+    "@astrojs/vercel": "^7.0.0",
+    "typescript": "^5.0.0"
   }
 }

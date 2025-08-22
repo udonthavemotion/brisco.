@@ -1,0 +1,137 @@
+---
+// subscribe/team.astro - Team Plan Subscription Page
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Subscribe to Team Plan - ZeroMotion | $1,200/month';
+const description = 'Subscribe to our Team Plan for $1,200/month. Enterprise-level solution with custom automation, advanced campaigns, and dedicated support.';
+const canonicalUrl = 'https://zeromotionmarketing.com/subscribe/team';
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={canonicalUrl}>
+  <style>
+    .cta-glass{
+      @apply relative inline-flex items-center justify-center
+             px-6 py-3 rounded-full
+             text-white/90 text-sm md:text-base tracking-wide
+             backdrop-blur-md bg-white/10 border border-white/15
+             shadow-[0_6px_30px_rgba(0,0,0,0.35)]
+             transition-transform duration-150 ease-out
+             hover:scale-[1.03] active:scale-[0.98] select-none;
+    }
+    .cta-glass:before{
+      content:""; position:absolute; inset:-2px; border-radius:9999px;
+      background: radial-gradient(60% 140% at 50% 0%,
+        rgba(255,255,255,0.35), rgba(255,255,255,0) 60%);
+      opacity:.25; transition:opacity .2s ease;
+    }
+    .cta-glass:hover:before{ opacity:.4; }
+    .cta-glass:focus-visible{
+      outline:none; box-shadow:0 0 0 2px rgba(255,255,255,.7), 0 0 0 6px rgba(139,92,246,.35);
+    }
+    @media (prefers-reduced-motion: reduce){
+      .cta-glass{ transition:none }
+    }
+  </style>
+  <!-- Subscription Page -->
+  <section class="min-h-screen bg-gradient-to-br from-black via-purple-900/20 to-black flex items-center justify-center py-12">
+    <div class="container mx-auto px-4 max-w-2xl">
+      <!-- Back Link -->
+      <div class="mb-8">
+        <a 
+          href="/pricing" 
+          class="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors"
+        >
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to Pricing
+        </a>
+      </div>
+
+      <!-- Subscription Card -->
+      <div class="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border border-purple-500/30 shadow-2xl relative overflow-hidden">
+        <!-- Enterprise Badge -->
+        <div class="absolute top-0 right-0 bg-gradient-to-r from-yellow-500 to-orange-500 text-black px-4 py-1 rounded-bl-lg text-sm font-semibold">
+          Enterprise
+        </div>
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <svg class="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <h1 class="text-4xl font-bold text-white mb-2">Team Plan</h1>
+          <p class="text-2xl text-yellow-400 font-semibold">$1,200<span class="text-lg text-gray-400">/month</span></p>
+        </div>
+
+        <!-- Features -->
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold text-white mb-4">What's Included:</h3>
+          <ul class="space-y-3 text-gray-300">
+            <li class="flex items-start">
+              <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              Custom quote with up to 10 pages (designed & maintained)
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              Ongoing SEO campaigns (10-15 keyword tracking, blog content, backlinking)
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              Google + Social Ads management (PPC + retargeting campaigns)
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              Custom automation flows (multi-step pipelines, reminders, review requests)
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              CRM integrations
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              Monthly strategy call + reporting (deep dive on leads, ROI, optimizations)
+            </li>
+          </ul>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="space-y-4">
+          <a 
+            href="/contact?plan=team" 
+            class="cta-glass group w-full"
+          >
+            <span class="relative z-10">GET STARTED WITH TEAM PLAN</span>
+          </a>
+          <a 
+            href="/contact?plan=team&type=consultation" 
+            class="cta-glass group w-full"
+          >
+            <span class="relative z-10">SCHEDULE ENTERPRISE CONSULTATION</span>
+          </a>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mt-8 pt-6 border-t border-gray-700">
+          <p class="text-sm text-gray-400 text-center">
+            Custom setup • Dedicated account manager • Priority support • Flexible terms
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

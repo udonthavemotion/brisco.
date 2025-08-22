@@ -1,0 +1,24 @@
+# Large media files
+*.mov
+*.mp4
+*.webm
+
+# Development files
+node_modules
+.astro
+.cache
+.vscode
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist
+.vercel
+
+# Logs
+*.log
+npm-debug.log*
+

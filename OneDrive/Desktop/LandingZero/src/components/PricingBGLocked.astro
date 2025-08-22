@@ -1,0 +1,64 @@
+---
+// PricingBGLocked.astro - Production Spline background with locked composition
+---
+
+<spline-viewer 
+  url="https://prod.spline.design/RCaaK-4CalqToaUY/scene.splinecode" 
+  loading="eager"
+  class="spline-pricing-locked"
+></spline-viewer>
+
+<style>
+  .spline-pricing-locked {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none;
+    /* Prevent any transforms or zoom that could cause composition shifts */
+    transform: none !important;
+    zoom: 1 !important;
+    /* Force hardware acceleration for smooth rendering */
+    will-change: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Enhanced scaling and positioning - locked */
+    transform-origin: center center;
+    /* Performance optimizations */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* Ensure no parent transforms affect the viewer */
+  html, body {
+    transform: none !important;
+    zoom: 1 !important;
+  }
+
+  /* Performance optimizations */
+  @media (prefers-reduced-motion: reduce) {
+    .spline-pricing-locked {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<script is:inline type="module" src="https://unpkg.com/@splinetool/viewer@1.10.51/build/spline-viewer.js"></script>
+
+<script>
+  // Ensure viewer is properly initialized
+  document.addEventListener('DOMContentLoaded', () => {
+    const viewer = document.querySelector('spline-viewer');
+    if (viewer) {
+      // Disable camera interactions once loaded
+      viewer.addEventListener('load', () => {
+        // Camera interactions should be disabled via the production Spline settings
+        console.log('Spline pricing background loaded with locked composition');
+      });
+    }
+  });
+</script>

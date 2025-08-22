@@ -1,0 +1,420 @@
+---
+const url = "https://prod.spline.design/iyPEAQe94NiEi1LV/scene.splinecode";
+
+/** Props you can override when using the component */
+const {
+  contained = true,                  // true = letterboxed frame (recommended), false = full-bleed hero
+  height = "500vh",            // used only when contained=false - super long for extensive scrolling
+  maxWidth = "1100px",
+  desktopRatio = "16/9",
+  mobileRatio  = "9/16",
+} = Astro.props;
+---
+
+<style>
+  /* Import cosmic fonts */
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+  .section { position:relative; width:100%; background:#0a0a12; overflow:hidden; }
+
+  /* Full-bleed hero mode - single viewport */
+  .hero   { position:relative; width:100vw; height:100vh; height:100svh; background: #050509; overflow:hidden; }
+  .viewer { position:absolute; top:0; left:0; width:100%; height:100%; display:block; z-index: 1; }
+
+  /* Contained (letterboxed) mode */
+  .frame-wrap { position:relative; width:100%; display:grid; place-items:center;
+                padding:clamp(16px,5vw,48px); background:#0a0a12; }
+  .frame {
+    position:relative; width:min(var(--maxw), 100%);
+    aspect-ratio: var(--dr);                /* desktop ratio */
+    border-radius:20px; overflow:hidden;
+    box-shadow:0 24px 80px rgba(0,0,0,.45);
+  }
+  @media (max-width:700px) {
+    .frame { aspect-ratio: var(--mr); width:min(540px,100%); }   /* mobile ratio */
+  }
+
+  /* Logo overlay - only for the logo video */
+  .logo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    height: 100svh;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    pointer-events: none; /* Allow Spline interaction behind */
+    padding: clamp(16px, 4vw, 48px);
+  }
+
+
+
+  /* CTA overlay centered on viewport - clean text only */
+  .cta-overlay {
+    position: absolute;
+    bottom: clamp(2rem, 8vh, 4rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    pointer-events: none; /* Allow Spline interaction behind */
+  }
+
+  /* Enhanced hero content wrapper */
+  .hero-cosmic-wrapper {
+    max-width: 600px;
+    width: 100%;
+    
+    /* Fade-in animation on load */
+    opacity: 0;
+    animation: cosmicFadeIn 1.5s ease-out 0.5s forwards;
+    
+    /* Transform for smooth entrance */
+    transform: translateY(20px);
+    
+    /* Enable pointer events for interactive content */
+    pointer-events: auto;
+  }
+
+  /* Logo video cosmic enhancement */
+  .hero-logo-video {
+    display: block;
+    width: clamp(180px, 25vw, 320px);
+    height: auto;
+    margin: 0 auto clamp(2rem, 6vw, 3rem);
+    
+    /* Enhanced cosmic glow */
+    filter: 
+      drop-shadow(0 0 20px rgba(147, 51, 234, 0.4))
+      drop-shadow(0 0 40px rgba(147, 51, 234, 0.2))
+      brightness(1.1);
+    
+    /* Smooth scaling on hover */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+  }
+
+  .hero-logo-video:hover {
+    transform: scale(1.02);
+    filter: 
+      drop-shadow(0 0 25px rgba(147, 51, 234, 0.6))
+      drop-shadow(0 0 50px rgba(147, 51, 234, 0.3))
+      brightness(1.15);
+  }
+
+  /* Clean CTA container */
+  .hero-cta-container {
+    display: flex;
+    flex-direction: row;
+    gap: clamp(1.5rem, 4vw, 2rem);
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto; /* Enable interaction for CTA buttons */
+  }
+
+  /* Glass Pill Subtle Glow CTA styling */
+  .floating-cta {
+    /* Glass pill base styling */
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    
+    /* Typography */
+    font-family: 'Orbitron', 'Rajdhani', system-ui, -apple-system, sans-serif;
+    font-size: clamp(0.5rem, 1.2vw, 0.625rem);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    
+    /* Glass effect */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    
+    /* Shadow and glow */
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+    
+    /* Transitions */
+    transition: transform 150ms ease-out;
+    cursor: pointer;
+    
+    /* Prevent text selection */
+    user-select: none;
+    -webkit-user-select: none;
+    
+    /* Enable pointer events */
+    pointer-events: auto;
+  }
+
+  /* Glass pill glow effect */
+  .floating-cta:before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 9999px;
+    background: radial-gradient(60% 140% at 50% 0%,
+      rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 60%);
+    opacity: 0.25;
+    transition: opacity 0.2s ease;
+  }
+
+  /* Hover effects */
+  .floating-cta:hover {
+    transform: scale(1.03);
+  }
+
+  .floating-cta:hover:before {
+    opacity: 0.4;
+  }
+
+  /* Active/touch states */
+  .floating-cta:active {
+    transform: scale(0.98);
+  }
+
+  /* Focus styles for accessibility */
+  .floating-cta:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7), 
+                0 0 0 6px rgba(139, 92, 246, 0.35);
+  }
+
+  /* Ensure text is above the glow effect */
+  .floating-cta span {
+    position: relative;
+    z-index: 10;
+  }
+
+
+
+  /* Cosmic fade-in animation */
+  @keyframes cosmicFadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    50% {
+      opacity: 0.7;
+      transform: translateY(10px) scale(0.98);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Mobile Portrait (up to 480px) */
+  @media (max-width: 30rem) {
+    .hero {
+      min-height: 100vh;
+      min-height: 100svh;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .overlay {
+      padding: 1rem;
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+    
+    .hero-logo-video {
+      width: clamp(140px, 35vw, 200px);
+    }
+    
+    .hero-cta-container {
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    
+    .floating-cta {
+      font-size: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      min-height: 28px;
+    }
+  }
+
+  /* Mobile Landscape & Large Mobile (481px - 767px) */
+  @media (min-width: 30.0625rem) and (max-width: 47.9375rem) {
+    .hero {
+      min-height: 100vh;
+      min-height: 100svh;
+      width: 100vw;
+    }
+    
+    .overlay {
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+    
+    .hero-cta-container {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.875rem;
+    }
+    
+    .floating-cta {
+      font-size: 0.5625rem;
+      padding: 0.3125rem 0.625rem;
+      min-height: 32px;
+    }
+  }
+
+  /* Tablet (768px+) */
+  @media (min-width: 48rem) {
+    .hero-cta-container {
+      flex-direction: row;
+      gap: 1rem;
+    }
+    
+    .floating-cta {
+      font-size: 0.625rem;
+      padding: 0.375rem 0.75rem;
+      min-height: 36px;
+    }
+  }
+
+  /* Desktop (1024px+) */
+  @media (min-width: 64rem) {
+    .hero-logo-video {
+      width: clamp(240px, 20vw, 320px);
+    }
+    
+    .floating-cta {
+      font-size: 0.625rem;
+      padding: 0.375rem 0.75rem;
+      min-height: 36px;
+    }
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-cosmic-wrapper {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    
+    .floating-cta,
+    .hero-logo-video {
+      transition: none;
+    }
+    
+    .floating-cta:hover {
+      transform: none;
+    }
+    
+    .floating-cta:before {
+      transition: none;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .floating-cta {
+      border-width: 2px;
+      border-color: currentColor;
+    }
+    
+    .primary-cta,
+    .secondary-cta {
+      -webkit-text-fill-color: unset;
+      background: none;
+      color: white;
+    }
+  }
+
+  /* Touch device optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    .floating-cta {
+      min-height: 40px;
+      padding: 0.5rem 1rem;
+    }
+    
+    .floating-cta:hover {
+      transform: none;
+    }
+    
+    .floating-cta:hover:before {
+      opacity: 0.25;
+    }
+  }
+
+
+</style>
+
+<!-- Preload local scene for snappier load -->
+<link rel="preload" href={url} as="fetch" crossorigin>
+
+{contained ? (
+  <section class="section">
+    <div class="frame-wrap">
+      <div class="frame" style={{ "--maxw": maxWidth, "--dr": desktopRatio, "--mr": mobileRatio }}>
+        <spline-viewer class="viewer" url={url} loading="eager"></spline-viewer>
+      </div>
+    </div>
+  </section>
+) : (
+  <section class="section">
+    <div class="hero" style={{ "--h": height }}>
+      <spline-viewer class="viewer" url={url} loading="eager"></spline-viewer>
+      
+      <!-- Logo overlay - only shows initially -->
+      <div class="logo-overlay">
+        <div class="hero-cosmic-wrapper">
+          <!-- ZeroMotion Logo Video -->
+          <div class="flex justify-center">
+            <video 
+              class="hero-logo-video"
+              autoplay 
+              muted 
+              loop 
+              playsinline
+              preload="metadata"
+            >
+              <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm">
+              <!-- Fallback for browsers that don't support WebM -->
+              <source src="/media/ZeroMotion-Transparent.mov" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        
+
+      </div>
+      
+      <!-- CTA overlay at bottom of viewport -->
+      <div class="cta-overlay">
+        <div class="hero-cta-container">
+          <a 
+            href="/contact" 
+            class="floating-cta"
+          >
+            <span class="relative z-10">CONTACT NOW</span>
+          </a>
+          <a 
+            href="/pricing" 
+            class="floating-cta"
+          >
+            <span class="relative z-10">SEE PRICING</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  // Import the Spline viewer on the client side only
+  import "@splinetool/viewer";
+</script>

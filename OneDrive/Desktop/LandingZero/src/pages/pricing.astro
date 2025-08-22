@@ -9,6 +9,181 @@ const canonicalUrl = 'https://zeromotionmarketing.com/pricing';
 ---
 
 <BaseLayout title={title} description={description} canonicalUrl={canonicalUrl}>
+  <!-- Hero Section -->
+  <section class="relative min-h-[60vh] bg-black flex items-center justify-center overflow-hidden">
+    
+    <!-- Background Video -->
+    <div class="absolute inset-0 z-0">
+      <video 
+        class="w-full h-full object-cover hero-bg-video"
+        autoplay 
+        muted 
+        loop 
+        playsinline
+        preload="auto"
+        webkit-playsinline
+      >
+        <source src="/media/backgroundheaderforpricing.mp4" type="video/mp4">
+      </video>
+      <!-- Video overlay for better logo visibility -->
+      <div class="absolute inset-0 bg-black/30"></div>
+    </div>
+    
+    <!-- Hero Content -->
+    <div class="relative z-10 container mx-auto px-4 text-center flex items-center justify-center min-h-[50vh]">
+      <!-- Large Spinning Logo -->
+      <div class="flex justify-center">
+        <a href="/" class="cursor-pointer">
+          <video 
+            class="w-80 h-80 md:w-96 md:h-96 lg:w-[32rem] lg:h-[32rem] object-contain"
+            autoplay 
+            muted 
+            loop 
+            playsinline
+            preload="metadata"
+          >
+            <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm">
+            <source src="/media/ZeroMotion-MP4.mp4" type="video/mp4">
+            <div class="w-80 h-80 md:w-96 md:h-96 lg:w-[32rem] lg:h-[32rem] bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-6xl md:text-8xl lg:text-9xl">ZM</span>
+            </div>
+          </video>
+        </a>
+      </div>
+    </div>
+
+
+  </section>
+
   <!-- Pricing Section with 3D Spline Cards -->
   <PricingSpline />
+
+  <style>
+    /* High-quality background video optimizations */
+    .hero-bg-video {
+      filter: brightness(0.8) contrast(1.1) saturate(1.1);
+      will-change: auto;
+      /* Enhanced quality rendering */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+      /* Force GPU acceleration for smoothest rendering */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      /* Better rendering on high-DPI displays */
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+      /* Enhanced performance and quality */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Mobile video optimizations with enhanced quality */
+    @media (max-width: 768px) {
+      .hero-bg-video {
+        object-position: center center;
+        filter: brightness(0.7) contrast(1.2) saturate(1.1);
+        /* Better mobile scaling */
+        image-rendering: auto;
+        transform: scale(1) translateZ(0);
+      }
+    }
+    
+    /* Enhanced quality for high-DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .hero-bg-video {
+        image-rendering: -webkit-optimize-contrast;
+        filter: brightness(0.8) contrast(1.2) saturate(1.1) blur(0px);
+      }
+    }
+    
+    /* Performance optimizations */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-bg-video {
+        animation: none;
+      }
+    }
+  </style>
+
+  <!-- Footer Section -->
+  <footer class="bg-black border-t border-purple-900/30">
+    <div class="container mx-auto px-4 py-12">
+      <!-- Footer Content -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <!-- Company Info -->
+        <div class="md:col-span-2">
+          <div class="flex items-center mb-4">
+            <video 
+              class="w-12 h-12 object-contain mr-3"
+              autoplay 
+              muted 
+              loop 
+              playsinline
+              preload="metadata"
+            >
+              <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm">
+              <source src="/media/ZeroMotion-MP4.mp4" type="video/mp4">
+            </video>
+            <h3 class="text-2xl font-bold text-white">ZeroMotion</h3>
+          </div>
+          <p class="text-gray-400 mb-4 max-w-md">
+            AI-powered web development and marketing automation for modern businesses. 
+            Mobile-first designs that convert visitors into customers.
+          </p>
+          <div class="flex space-x-4">
+            <a href="/contact" class="text-purple-400 hover:text-purple-300 transition-colors">
+              Get Started
+            </a>
+            <a href="/" class="text-gray-400 hover:text-white transition-colors">
+              Home
+            </a>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div>
+          <h4 class="text-lg font-semibold text-white mb-4">Services</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>AI Website Development</li>
+            <li>Marketing Automation</li>
+            <li>Lead Generation</li>
+            <li>PPC Management</li>
+            <li>GoHighLevel Integration</li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 class="text-lg font-semibold text-white mb-4">Contact</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>Louisiana, USA</li>
+            <li>
+              <a href="/contact" class="hover:text-purple-400 transition-colors">
+                Get Quote
+              </a>
+            </li>
+            <li>
+              <a href="mailto:hello@zeromotionmarketing.com" class="hover:text-purple-400 transition-colors">
+                hello@zeromotionmarketing.com
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-purple-900/30 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400 mb-4 md:mb-0">
+          © 2024 ZeroMotion Marketing. All rights reserved.
+        </p>
+        <div class="flex space-x-6 text-sm text-gray-400">
+          <a href="#" class="hover:text-purple-400 transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-purple-400 transition-colors">Terms of Service</a>
+          <a href="/contact" class="hover:text-purple-400 transition-colors">Support</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </BaseLayout>

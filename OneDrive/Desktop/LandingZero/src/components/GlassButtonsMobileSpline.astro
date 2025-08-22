@@ -1,0 +1,71 @@
+---
+// Mobile-specific Spline component for contact page
+const url = "https://prod.spline.design/5V7SSC8l8WmY79U3/scene.splinecode";
+
+/** Props (override per-use if needed) */
+const {
+  height = "100svh",
+  maxWidth = "1100px",
+  desktopRatio = "16/9",
+  mobileRatio = "9/16",
+  contained = true,   // true = letterboxed frame (recommended for mobile), false = full-bleed
+} = Astro.props;
+---
+
+<style>
+  .section { position: relative; width:100%; background:#000; overflow:hidden; }
+
+  /* Full-bleed mode */
+  .hero   { position:relative; width:100vw; height:var(--h); overflow:hidden; }
+  .viewer { position:absolute; inset:0; width:100%; height:100%; display:block; }
+
+  /* Contained (letterboxed) mode */
+  .frame-wrap { position:relative; width:100%; display:grid; place-items:center;
+                padding:clamp(16px,5vw,48px); background:#000; }
+  .frame {
+    position:relative; width:min(var(--maxw), 100%);
+    aspect-ratio: var(--dr);
+    border-radius:20px; overflow:hidden;
+    box-shadow:0 24px 80px rgba(0,0,0,.45);
+  }
+  @media (max-width:700px) {
+    .frame { aspect-ratio: var(--mr); width:min(540px,100%); }
+  }
+</style>
+
+<!-- Preload scene for faster loading -->
+<link rel="preload" href={url} as="fetch" crossorigin>
+
+{contained ? (
+  <section class="section">
+    <div class="frame-wrap">
+      <div class="frame" style={{ "--maxw": maxWidth, "--dr": desktopRatio, "--mr": mobileRatio }}>
+        <spline-viewer class="viewer" url={url} loading="eager"></spline-viewer>
+      </div>
+    </div>
+  </section>
+) : (
+  <section class="section">
+    <div class="hero" style={{ "--h": height }}>
+      <spline-viewer class="viewer" url={url} loading="eager"></spline-viewer>
+    </div>
+  </section>
+)}
+
+<script is:inline type="module" src="https://unpkg.com/@splinetool/viewer@1.10.51/build/spline-viewer.js"></script>
+
+<script>
+  // Ensure viewer is properly initialized
+  document.addEventListener('DOMContentLoaded', () => {
+    const viewer = document.querySelector('spline-viewer');
+    if (viewer) {
+      viewer.addEventListener('load', () => {
+        console.log('Mobile contact Spline component loaded successfully');
+      });
+      
+      viewer.addEventListener('error', (error) => {
+        console.error('Mobile Spline viewer error:', error);
+      });
+    }
+  });
+</script>

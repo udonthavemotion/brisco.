@@ -1,0 +1,156 @@
+---
+// PricingBGRuntime.astro - Runtime Spline background with locked camera position
+---
+
+<div class="spacer">
+  <div class="stage" id="pricing-stage">
+    <canvas id="pricing-canvas"></canvas>
+  </div>
+</div>
+
+<style>
+  .spacer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .stage {
+    aspect-ratio: 16/9;
+    width: min(1200px, 100vw);
+    overflow: hidden;
+    border-radius: 16px;
+    position: relative;
+    background: #000;
+    /* Ensure stage container doesn't interfere with layout */
+    display: block;
+    margin: 0 auto;
+  }
+
+  #pricing-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    /* Ensure canvas fills the stage completely */
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Prevent any transforms or zoom */
+    transform: none !important;
+    zoom: 1 !important;
+    /* Force hardware acceleration for smooth rendering */
+    will-change: auto;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Mobile responsive adjustments */
+  @media (max-width: 768px) {
+    .stage {
+      width: min(100vw, 100%);
+      border-radius: 12px;
+      /* Maintain aspect ratio on mobile */
+      aspect-ratio: 16/9;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stage {
+      border-radius: 8px;
+    }
+  }
+
+  /* Ensure no parent transforms affect the stage */
+  html, body {
+    transform: none !important;
+    zoom: 1 !important;
+  }
+
+  /* Performance optimizations */
+  @media (prefers-reduced-motion: reduce) {
+    #pricing-canvas {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { Application } from '@splinetool/runtime';
+  
+  document.addEventListener('DOMContentLoaded', async () => {
+    const canvas = document.getElementById('pricing-canvas') as HTMLCanvasElement;
+    const stage = document.getElementById('pricing-stage') as HTMLElement;
+    
+    if (canvas && stage) {
+      try {
+        // Initialize Spline application
+        const app = new Application(canvas);
+        
+        // TODO: Replace with your production Spline scene URL
+        await app.load('PASTE_PROD_URL_HERE');
+        
+        // TODO: Lock camera position and target after scene loads
+        // NOTE: The Spline Runtime API may vary between versions. 
+        // You'll need to adjust these camera control methods based on your specific API version.
+        
+        /*
+        // TODO: Uncomment and adjust these lines once you have the correct API methods:
+        
+        // Find the camera object (replace 'PricingCam' with your actual camera name)
+        const camera = app.findObjectByName('PricingCam');
+        
+        if (camera) {
+          // TODO: Set camera position (replace with your actual coordinates)
+          // camera.position.x = YOUR_X_COORDINATE;
+          // camera.position.y = YOUR_Y_COORDINATE;
+          // camera.position.z = YOUR_Z_COORDINATE;
+          
+          // TODO: Set camera rotation (replace with your actual rotation values)
+          // camera.rotation.x = YOUR_X_ROTATION;
+          // camera.rotation.y = YOUR_Y_ROTATION;
+          // camera.rotation.z = YOUR_Z_ROTATION;
+          
+          // TODO: Set camera target/lookAt (if supported)
+          // camera.target.x = YOUR_TARGET_X;
+          // camera.target.y = YOUR_TARGET_Y;
+          // camera.target.z = YOUR_TARGET_Z;
+          
+          // TODO: Disable camera controls (method may vary)
+          // camera.enableControls = false;
+          // OR
+          // app.disableControls();
+          
+          console.log('Spline pricing background loaded with locked camera position');
+        }
+        */
+        
+        // Set canvas size to match container
+        app.setSize(stage.offsetWidth, stage.offsetHeight);
+        
+        // Handle window resize
+        const handleResize = () => {
+          app.setSize(stage.offsetWidth, stage.offsetHeight);
+          // TODO: Re-apply camera lock after resize if needed
+        };
+        
+        window.addEventListener('resize', handleResize);
+        
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+          window.removeEventListener('resize', handleResize);
+        });
+        
+      } catch (error) {
+        console.error('Failed to load Spline pricing background:', error);
+        // Fallback: hide canvas and show a background color
+        canvas.style.display = 'none';
+        stage.style.background = 'linear-gradient(135deg, #1a1a1a 0%, #000 50%, #1a1a1a 100%)';
+      }
+    }
+  });
+</script>

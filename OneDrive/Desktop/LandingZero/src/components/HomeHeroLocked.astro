@@ -1,123 +1,36 @@
 ---
-// HeroSpline.astro - Full-screen hero with Spline embed
+// Interactive Spline hero using runtime with full user controls and natural camera behavior
 ---
-
-<section class="relative min-h-screen overflow-hidden bg-transparent">
-  <!-- Spline iframe container with 25% zoom scale -->
-  <div class="hero-spline-container">
-    <iframe
-      src="https://my.spline.design/orb-E5M8vNSi9bBYeNhNP5hk3DcJ/"
-      title="ZeroMotion Spline"
-      loading="eager"
-      class="w-full h-full"
-      style="border:0;"
-      allow="fullscreen; xr-spatial-tracking"
-    ></iframe>
-  </div>
-  
-  <!-- overlay for contrast -->
-  <div class="absolute inset-0 bg-black/45"></div>
-  
-  <!-- cosmic hero content -->
-  <div class="hero-cosmic-content">
-    <div class="hero-cosmic-wrapper">
-      <!-- ZeroMotion Logo Video -->
-      <div class="flex justify-center">
-        <video 
-          class="hero-logo-video"
-          autoplay 
-          muted 
-          loop 
-          playsinline
-          preload="metadata"
-        >
-          <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm">
-          <!-- Fallback for browsers that don't support WebM -->
-          <source src="/media/ZeroMotion-Transparent.mov" type="video/mp4">
-        </video>
-      </div>
-      
-      <div class="hero-cta-container">
-        <a 
-          href="/contact" 
-          class="floating-cta primary-cta"
-        >
-          Contact Now
-        </a>
-        <a 
-          href="/pricing" 
-          class="floating-cta secondary-cta"
-        >
-          See Pricing
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
 
 <style>
   /* Import cosmic fonts */
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
-  .hero-spline-container {
-    position: absolute;
-    inset: 0;
+  .hero {
+    position: relative;
+    width: 100vw;
+    height: 100svh;      /* iOS-safe full viewport */
+    overflow: hidden;
+    background: #050509;
+  }
+  canvas {
+    display: block;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-  }
-
-  /* Desktop scaling for Spline */
-  @media (min-width: 768px) {
-    .hero-spline-container {
-      width: 400%; /* 1/0.25 = 4x original width to compensate for scale */
-      height: 400%; /* 1/0.25 = 4x original height */
-      transform: scale(0.25);
-      transform-origin: 0 0;
-    }
-  }
-
-  /* Mobile-specific Spline scaling */
-  @media (max-width: 767px) {
-    .hero-spline-container {
-      width: 200%; /* Reduced scaling for mobile */
-      height: 200%;
-      transform: scale(0.5);
-      transform-origin: center center;
-      /* Ensure no gaps on mobile */
-      left: -50%;
-      top: -50%;
-    }
-    
-    /* Mobile-specific overlay adjustments */
-    .hero-spline-container + div {
-      /* Target the overlay div */
-      width: 100vw;
-      height: 100vh;
-      height: 100svh;
-      left: 0;
-      top: 0;
-    }
-  }
-
-  /* Enhanced hero container with cosmic positioning */
-  .hero-cosmic-content {
-    /* Absolute positioning over Spline iframe */
+    /* Ensure canvas is properly positioned */
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 15; /* Higher than overlay (z-10) */
-    
-    /* Perfect centering */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    
-    /* Cosmic spacing */
-    padding: clamp(1rem, 4vw, 2rem);
+    z-index: 1;
+  }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    pointer-events: none; /* Allow Spline interactions while keeping overlay content interactive */
+    padding: clamp(16px, 4vw, 48px);
   }
 
   /* Enhanced hero content wrapper */
@@ -131,6 +44,9 @@
     
     /* Transform for smooth entrance */
     transform: translateY(20px);
+    
+    /* Enable pointer events for interactive content */
+    pointer-events: auto;
   }
 
   /* Logo video cosmic enhancement */
@@ -308,7 +224,7 @@
 
   /* Mobile Portrait (up to 480px) */
   @media (max-width: 30rem) {
-    section {
+    .hero {
       min-height: 100vh;
       min-height: 100svh; /* Use modern viewport units */
       width: 100vw;
@@ -316,7 +232,7 @@
       padding: 0;
     }
     
-    .hero-cosmic-content {
+    .overlay {
       padding: 1rem;
       /* Ensure content fills mobile viewport */
       min-height: 100vh;
@@ -346,13 +262,13 @@
 
   /* Mobile Landscape & Large Mobile (481px - 767px) */
   @media (min-width: 30.0625rem) and (max-width: 47.9375rem) {
-    section {
+    .hero {
       min-height: 100vh;
       min-height: 100svh;
       width: 100vw;
     }
     
-    .hero-cosmic-content {
+    .overlay {
       min-height: 100vh;
       min-height: 100svh;
     }
@@ -447,3 +363,88 @@
   }
 </style>
 
+<div class="hero">
+  <canvas id="home3d"></canvas>
+  <div class="overlay">
+    <div class="hero-cosmic-wrapper">
+      <!-- ZeroMotion Logo Video -->
+      <div class="flex justify-center">
+        <video 
+          class="hero-logo-video"
+          autoplay 
+          muted 
+          loop 
+          playsinline
+          preload="metadata"
+        >
+          <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm">
+          <!-- Fallback for browsers that don't support WebM -->
+          <source src="/media/ZeroMotion-Transparent.mov" type="video/mp4">
+        </video>
+      </div>
+      
+      <div class="hero-cta-container">
+        <a 
+          href="/contact" 
+          class="floating-cta primary-cta"
+        >
+          Contact Now
+        </a>
+        <a 
+          href="/pricing" 
+          class="floating-cta secondary-cta"
+        >
+          See Pricing
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Import and initialize Spline runtime with full interactivity
+  import { Application } from "@splinetool/runtime";
+
+  const SPLINE_URL = "https://prod.spline.design/M1xfE4sHHL-Zx4C2/scene.splinecode";
+
+  async function initSpline() {
+    const canvas = document.getElementById("home3d");
+    if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
+      console.error("Canvas element not found or not a canvas");
+      return;
+    }
+
+    console.log("Canvas found, initializing Spline...");
+    const app = new Application(canvas);
+
+    // Utility: resize helper to keep canvas crisp without CSS scaling.
+    function fit() {
+      const { clientWidth: w, clientHeight: h } = canvas;
+      console.log(`Resizing canvas to ${w}x${h}`);
+      app.setSize(w, h);
+    }
+
+    try {
+      console.log("Loading Spline scene from:", SPLINE_URL);
+      await app.load(SPLINE_URL);
+      console.log("Spline scene loaded successfully with full interactivity");
+
+      // Keep sizing correct on load and resize
+      fit();
+      window.addEventListener("resize", fit);
+      
+      // Initial fit after a brief delay to ensure proper sizing
+      setTimeout(fit, 100);
+      
+    } catch (error) {
+      console.error("Error loading Spline scene:", error);
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSpline);
+  } else {
+    initSpline();
+  }
+</script>

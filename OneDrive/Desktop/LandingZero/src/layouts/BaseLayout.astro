@@ -60,6 +60,9 @@ const fullTitle = title.includes('ZeroMotionMarketing') ? title : `${title} | Ze
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
+    <!-- Preload Spline scene for runtime -->
+    <link rel="preload" href="https://prod.spline.design/M1xfE4sHHL-Zx4C2/scene.splinecode" as="fetch" crossorigin>
+    
     <!-- Modern Font - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     
@@ -86,11 +89,34 @@ const fullTitle = title.includes('ZeroMotionMarketing') ? title : `${title} | Ze
       /* Ensure body doesn't have scaling issues */
       body {
         overflow-x: hidden;
+        background: #000000; /* Default black background */
+        min-height: 100vh;
+        min-height: 100svh; /* Modern viewport units for mobile */
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* Mobile-specific fixes to prevent gaps */
+      @media (max-width: 767px) {
+        html, body {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          position: relative;
+        }
+        
+        body {
+          /* Mobile-only gradient background */
+          background: linear-gradient(180deg, #7c3aed 0%, #4c1d95 50%, #000000 100%);
+          background-attachment: fixed;
+          background-size: 100% 100%;
+        }
       }
     </style>
   </head>
   
-  <body class="bg-black text-white antialiased">
+  <body class="text-white antialiased">
     <slot />
   </body>
 </html>

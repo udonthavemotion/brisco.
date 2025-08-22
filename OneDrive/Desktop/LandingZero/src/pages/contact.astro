@@ -1,7 +1,9 @@
 ---
 // contact.astro - Contact page for ZeroMentor
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ContactComponent from '../components/Contact.astro';
+import GlassButtonsSplineLocked from "../components/GlassButtonsSplineLocked.astro";
+import GlassButtonsMobileSpline from "../components/GlassButtonsMobileSpline.astro";
+// import ContactComponent from '../components/Contact.astro'; // Old glass_buttons embed - commented out
 
 const title = 'Contact Us - ZeroMentor';
 const description = 'Get in touch with ZeroMentor. We\'ll help you accelerate your growth and achieve your goals. Response within 24 hours guaranteed.';
@@ -27,8 +29,106 @@ const canonicalUrl = 'https://zeromotionmarketing.com/contact';
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+
+    /* Responsive Spline component visibility */
+    .desktop-spline {
+      display: block;
+    }
+    
+    .mobile-spline {
+      display: none;
+    }
+
+    /* Show mobile version on mobile devices */
+    @media (max-width: 768px) {
+      .desktop-spline {
+        display: none;
+      }
+      
+      .mobile-spline {
+        display: block;
+      }
+    }
+
+    /* Restored original logo overlay styles */
+    .zmm-logo-overlay {
+      position: fixed;
+      top: clamp(16px, 3vh, 32px);
+      left: clamp(16px, 3vw, 32px);
+      z-index: 1000;
+      /* Prevent logo from interfering with Spline interactions */
+      pointer-events: none;
+    }
+
+    .zmm-logo-link {
+      display: block;
+      /* Re-enable pointer events for the logo link */
+      pointer-events: auto;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .zmm-logo-link:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    .zmm-logo-link:active {
+      transform: scale(0.98);
+    }
+
+    .zmm-logo-video {
+      display: block;
+      width: clamp(80px, 12vw, 120px);
+      height: auto;
+      /* Maintain aspect ratio */
+      object-fit: contain;
+      /* Smooth edges */
+      border-radius: 6px;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 480px) {
+      .zmm-logo-overlay {
+        top: 12px;
+        left: 12px;
+      }
+      
+      .zmm-logo-video {
+        width: clamp(60px, 15vw, 80px);
+      }
+    }
   </style>
   
-  <!-- Full-screen Contact Component -->
-  <ContactComponent />
+  <!-- Desktop Spline Component -->
+  <div class="desktop-spline">
+    <GlassButtonsSplineLocked contained={false} height="100svh" />
+  </div>
+  
+  <!-- Mobile Spline Component -->
+  <div class="mobile-spline">
+    <GlassButtonsMobileSpline contained={false} height="100svh" />
+  </div>
+  
+  <!-- Logo Overlay (restored from original) -->
+  <div class="zmm-logo-overlay">
+    <a href="/" class="zmm-logo-link" aria-label="Return to ZeroMotion Marketing home page">
+      <video 
+        class="zmm-logo-video"
+        autoplay 
+        muted 
+        loop 
+        playsinline
+        preload="metadata"
+      >
+        <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm">
+        <!-- Fallback for browsers that don't support WebM -->
+        <source src="/media/ZeroMotion-Transparent.mov" type="video/mp4">
+      </video>
+    </a>
+  </div>
+  
+  <!-- Old implementation commented out -->
+  <!-- <ContactComponent /> -->
 </BaseLayout>

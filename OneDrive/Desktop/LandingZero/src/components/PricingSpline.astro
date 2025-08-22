@@ -1,115 +1,121 @@
 ---
-// PricingSpline.astro - 3D Pricing Cards with Spline embed
+// PricingSpline.astro - Responsive 3D Pricing Cards with Video Background
 ---
 
-<section id="pricing" class="relative py-16 md:py-24 bg-black overflow-hidden">
-  <!-- Logo Video Section -->
-  <div class="relative z-20 container mx-auto px-4 text-center mb-16">
-    <div class="flex justify-center mb-6">
-      <a href="/" class="cursor-pointer">
-        <video
-          class="w-40 h-40 md:w-48 md:h-48 object-contain"
-          autoplay
-          muted
-          loop
+<section id="pricing" class="relative py-0 bg-black overflow-hidden">
+  
+  <!-- Background Video -->
+  <div class="absolute inset-0 z-0">
+    <video 
+      class="w-full h-full object-cover pricing-bg-video"
+      autoplay 
+      muted 
+      loop 
+      playsinline
+      preload="auto"
+      webkit-playsinline
+    >
+      <source src="/media/backgroundheaderforpricing.mp4" type="video/mp4">
+    </video>
+    <!-- Video overlay for better content visibility -->
+    <div class="absolute inset-0 bg-black/40"></div>
+  </div>
+
+
+
+  <!-- Responsive 3D Video Background with Interactive Overlays -->
+  <div class="relative z-10 w-full">
+    <div class="relative w-full">
+      <!-- Video Background -->
+      <div class="relative w-full">
+        <video 
+          class="pricing-video w-full h-auto"
+          autoplay 
+          muted 
+          loop 
           playsinline
-          preload="auto"
-          aria-label="ZeroMotion logo animation - Click to go home"
+          preload="metadata"
         >
-          <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm" />
-          <source src="/media/ZeroMotion-MP4.mp4" type="video/mp4" />
-          <!-- Fallback for browsers that don't support video -->
-          <div class="w-40 h-40 md:w-48 md:h-48 bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center">
-            <span class="text-white font-bold text-2xl md:text-3xl">ZM</span>
-          </div>
+          <source src="/media/responsive-3-d-cards (2).mp4" type="video/mp4">
+          <!-- Fallback gradient background -->
+          <div class="video-fallback"></div>
         </video>
-      </a>
+      </div>
+      
+      <!-- Interactive Subscribe Button Overlays -->
+      <div class="absolute inset-0 pointer-events-none z-10">
+        <!-- Starter Plan Subscribe Button -->
+        <a 
+          href="/subscribe/starter"
+          class="subscribe-button-overlay subscribe-starter"
+          aria-label="Subscribe to Starter Plan - $300/month"
+        >
+          <span class="sr-only">Subscribe to Starter Plan</span>
+        </a>
+        
+        <!-- Pro Plan Subscribe Button -->
+        <a 
+          href="/subscribe/pro"
+          class="subscribe-button-overlay subscribe-pro"
+          aria-label="Subscribe to Pro Plan - $600/month"
+        >
+          <span class="sr-only">Subscribe to Pro Plan</span>
+        </a>
+        
+        <!-- Team Plan Subscribe Button -->
+        <a 
+          href="/subscribe/team"
+          class="subscribe-button-overlay subscribe-team"
+          aria-label="Subscribe to Team Plan - $1200/month"
+        >
+          <span class="sr-only">Subscribe to Team Plan</span>
+        </a>
+      </div>
     </div>
   </div>
-
-
-
-  <!-- Spline 3D Cards Container -->
-  <div class="relative min-h-[700px] md:min-h-[900px] overflow-hidden">
-    <!-- Spline iframe for 3D pricing cards -->
-    <iframe
-      src="https://my.spline.design/responsive3dcards-6E6bbPpBxv6kLtySht0EkbMK/"
-      title="ZeroMotion 3D Pricing Cards"
-      loading="lazy"
-      class="spline-pricing-iframe"
-      allow="fullscreen; xr-spatial-tracking"
-    ></iframe>
-    
-    <!-- Subtle overlay for better text contrast if needed -->
-    <div class="absolute inset-0 bg-black/10 pointer-events-none"></div>
-  </div>
-
-
-
 
 </section>
 
 <style>
-  /* Logo video styling */
-  video {
-    filter: brightness(1.1) contrast(1.05);
-    will-change: opacity;
-  }
-  
-  /* Ensure video is always visible */
-  video {
-    opacity: 1 !important;
-  }
-  
-  /* Ultra high-quality Spline iframe styling */
-  .spline-pricing-iframe {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+  /* Seamless Video Styling */
+  .pricing-video {
+    display: block;
     border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    object-fit: contain;
+    object-position: center;
     opacity: 0;
-    animation: fadeIn 0.8s ease-in-out 0.3s forwards;
-    /* Maximum quality rendering */
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
-    /* Enhanced scaling and positioning */
-    transform: scale(1) translateZ(0);
-    transform-origin: center center;
-    /* Force GPU acceleration for smoothest rendering */
-    will-change: transform, opacity;
+    animation: videoFadeIn 1s ease-in-out 0.5s forwards;
+    /* Enhanced video quality */
+    filter: brightness(1.05) contrast(1.1) saturate(1.1);
+    /* Force hardware acceleration */
+    will-change: opacity;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    -webkit-transform: translateZ(0);
-    -moz-transform: translateZ(0);
-    -ms-transform: translateZ(0);
-    -o-transform: translateZ(0);
-    /* Enhanced performance */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    /* Better rendering on high-DPI displays */
-    -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
   }
-  
-  @media (max-width: 768px) {
-    .spline-pricing-iframe {
-      min-height: 600px;
-      /* Enhanced mobile quality */
-      image-rendering: auto;
-    }
+
+  .video-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(120, 119, 198, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  
-  /* Enhanced quality for high-DPI displays */
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .spline-pricing-iframe {
-      image-rendering: -webkit-optimize-contrast;
-    }
+
+  .video-fallback::after {
+    content: 'Loading 3D Pricing Cards...';
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.1rem;
   }
-  
-  @keyframes fadeIn {
+
+  @keyframes videoFadeIn {
     from {
       opacity: 0;
       transform: translate3d(0, 10px, 0);
@@ -119,15 +125,204 @@
       transform: translate3d(0, 0, 0);
     }
   }
-  
 
-  
+
+
+  /* Mobile responsive adjustments */
+  @media (max-width: 768px) {
+    .pricing-video {
+      width: 100%;
+      height: auto;
+    }
+  }
+
   /* Performance optimizations */
   @media (prefers-reduced-motion: reduce) {
-    video,
-    .group:hover .absolute {
+    .pricing-video {
       animation: none;
-      transition: none;
+      opacity: 1;
+    }
+  }
+
+  /* High-quality pricing section background video */
+  .pricing-bg-video {
+    filter: brightness(0.6) contrast(1.2) saturate(1.1);
+    will-change: auto;
+    /* Enhanced quality rendering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    /* Force GPU acceleration for smoothest rendering */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Better rendering on high-DPI displays */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    /* Enhanced performance and quality */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Mobile video optimizations for pricing section with enhanced quality */
+  @media (max-width: 768px) {
+    .pricing-bg-video {
+      object-position: center center;
+      filter: brightness(0.5) contrast(1.3) saturate(1.1);
+      /* Better mobile scaling */
+      image-rendering: auto;
+      transform: scale(1) translateZ(0);
+    }
+  }
+  
+  /* Enhanced quality for high-DPI displays */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .pricing-bg-video {
+      image-rendering: -webkit-optimize-contrast;
+      filter: brightness(0.6) contrast(1.3) saturate(1.1) blur(0px);
+    }
+  }
+  
+  /* Performance optimizations for background video */
+  @media (prefers-reduced-motion: reduce) {
+    .pricing-bg-video {
+      animation: none;
+    }
+  }
+
+  /* Subscribe Button Overlay Styles - Subtle Interactions */
+  .subscribe-button-overlay {
+    position: absolute;
+    pointer-events: auto;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    /* Minimal visual feedback */
+    backdrop-filter: blur(0px);
+  }
+
+  .subscribe-button-overlay:hover {
+    background: transparent;
+    backdrop-filter: none;
+    transform: none;
+  }
+
+  .subscribe-button-overlay:active {
+    transform: none;
+    background: transparent;
+  }
+
+  .subscribe-button-overlay:focus {
+    outline: none;
+    background: transparent;
+  }
+
+  /* Screen reader only text */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Position Subscribe buttons based on the video card layout */
+  /* Desktop positioning - aligned with video buttons */
+  @media (min-width: 768px) {
+    .subscribe-starter {
+      left: 12%;
+      bottom: 18%;
+      width: 16%;
+      height: 6%;
+    }
+
+    .subscribe-pro {
+      left: 42%;
+      bottom: 18%;
+      width: 16%;
+      height: 6%;
+    }
+
+    .subscribe-team {
+      right: 12%;
+      bottom: 18%;
+      width: 16%;
+      height: 6%;
+    }
+  }
+
+  /* Mobile positioning - aligned with video buttons */
+  @media (max-width: 767px) {
+    .subscribe-starter {
+      left: 8%;
+      bottom: 22%;
+      width: 22%;
+      height: 5%;
+    }
+
+    .subscribe-pro {
+      left: 39%;
+      bottom: 22%;
+      width: 22%;
+      height: 5%;
+    }
+
+    .subscribe-team {
+      right: 8%;
+      bottom: 22%;
+      width: 22%;
+      height: 5%;
+    }
+  }
+
+  /* Extra small mobile positioning */
+  @media (max-width: 480px) {
+    .subscribe-starter {
+      left: 6%;
+      bottom: 20%;
+      width: 26%;
+      height: 6%;
+    }
+
+    .subscribe-pro {
+      left: 37%;
+      bottom: 20%;
+      width: 26%;
+      height: 6%;
+    }
+
+    .subscribe-team {
+      right: 6%;
+      bottom: 20%;
+      width: 26%;
+      height: 6%;
+    }
+  }
+
+  /* Enhanced touch targets for mobile - Completely invisible */
+  @media (hover: none) and (pointer: coarse) {
+    .subscribe-button-overlay {
+      min-height: 44px; /* iOS recommended touch target */
+      border: none;
+      background: transparent;
+    }
+
+    .subscribe-button-overlay:active {
+      background: transparent;
+      transform: none;
     }
   }
 </style>
@@ -135,11 +330,21 @@
 <script>
   // Enhanced video loading with performance optimization
   document.addEventListener('DOMContentLoaded', () => {
-    const video = document.querySelector('#pricing video') as HTMLVideoElement;
+    const video = document.querySelector('.pricing-video') as HTMLVideoElement;
     if (video) {
       // Mark video as loaded when it can play
       video.addEventListener('canplay', () => {
         video.setAttribute('data-loaded', 'true');
+        console.log('Pricing video loaded successfully');
+      });
+      
+      // Error handling for video loading
+      video.addEventListener('error', () => {
+        console.log('Video failed to load, showing fallback');
+        const fallback = document.querySelector('.video-fallback');
+        if (fallback) {
+          (fallback as HTMLElement).style.display = 'flex';
+        }
       });
       
       // Intersection Observer for lazy loading optimization
