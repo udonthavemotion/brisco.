@@ -10,6 +10,18 @@ export default defineConfig({
   site: 'https://zeromotionmarketing.com',
   compressHTML: true,
   build: {
-    inlineStylesheets: 'auto'
+    inlineStylesheets: 'auto',
+    assets: 'assets'
+  },
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            spline: ['@splinetool/runtime', '@splinetool/viewer']
+          }
+        }
+      }
+    }
   }
 });
