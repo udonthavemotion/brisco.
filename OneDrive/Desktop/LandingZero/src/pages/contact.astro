@@ -1,0 +1,34 @@
+---
+// contact.astro - Contact page for ZeroMentor
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactComponent from '../components/Contact.astro';
+
+const title = 'Contact Us - ZeroMentor';
+const description = 'Get in touch with ZeroMentor. We\'ll help you accelerate your growth and achieve your goals. Response within 24 hours guaranteed.';
+const canonicalUrl = 'https://zeromotionmarketing.com/contact';
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={canonicalUrl}>
+  <style>
+    /* Additional styles specific to contact page */
+    body {
+      overflow: hidden;
+    }
+
+    /* Loading state for Spline */
+    spline-viewer:not([loaded]) {
+      background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+      background-size: 400% 400%;
+      animation: gradient 3s ease infinite;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+  
+  <!-- Full-screen Contact Component -->
+  <ContactComponent />
+</BaseLayout>

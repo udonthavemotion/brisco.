@@ -1,0 +1,158 @@
+---
+// PricingSpline.astro - 3D Pricing Cards with Spline embed
+---
+
+<section id="pricing" class="relative py-16 md:py-24 bg-black overflow-hidden">
+  <!-- Logo Video Section -->
+  <div class="relative z-20 container mx-auto px-4 text-center mb-16">
+    <div class="flex justify-center mb-6">
+      <a href="/" class="cursor-pointer">
+        <video
+          class="w-40 h-40 md:w-48 md:h-48 object-contain"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+          aria-label="ZeroMotion logo animation - Click to go home"
+        >
+          <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm" />
+          <source src="/media/ZeroMotion-MP4.mp4" type="video/mp4" />
+          <!-- Fallback for browsers that don't support video -->
+          <div class="w-40 h-40 md:w-48 md:h-48 bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-2xl md:text-3xl">ZM</span>
+          </div>
+        </video>
+      </a>
+    </div>
+  </div>
+
+
+
+  <!-- Spline 3D Cards Container -->
+  <div class="relative min-h-[700px] md:min-h-[900px] overflow-hidden">
+    <!-- Spline iframe for 3D pricing cards -->
+    <iframe
+      src="https://my.spline.design/responsive3dcards-6E6bbPpBxv6kLtySht0EkbMK/"
+      title="ZeroMotion 3D Pricing Cards"
+      loading="lazy"
+      class="spline-pricing-iframe"
+      allow="fullscreen; xr-spatial-tracking"
+    ></iframe>
+    
+    <!-- Subtle overlay for better text contrast if needed -->
+    <div class="absolute inset-0 bg-black/10 pointer-events-none"></div>
+  </div>
+
+
+
+
+</section>
+
+<style>
+  /* Logo video styling */
+  video {
+    filter: brightness(1.1) contrast(1.05);
+    will-change: opacity;
+  }
+  
+  /* Ensure video is always visible */
+  video {
+    opacity: 1 !important;
+  }
+  
+  /* Ultra high-quality Spline iframe styling */
+  .spline-pricing-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-in-out 0.3s forwards;
+    /* Maximum quality rendering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    /* Enhanced scaling and positioning */
+    transform: scale(1) translateZ(0);
+    transform-origin: center center;
+    /* Force GPU acceleration for smoothest rendering */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    /* Enhanced performance */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Better rendering on high-DPI displays */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  
+  @media (max-width: 768px) {
+    .spline-pricing-iframe {
+      min-height: 600px;
+      /* Enhanced mobile quality */
+      image-rendering: auto;
+    }
+  }
+  
+  /* Enhanced quality for high-DPI displays */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .spline-pricing-iframe {
+      image-rendering: -webkit-optimize-contrast;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+
+  
+  /* Performance optimizations */
+  @media (prefers-reduced-motion: reduce) {
+    video,
+    .group:hover .absolute {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Enhanced video loading with performance optimization
+  document.addEventListener('DOMContentLoaded', () => {
+    const video = document.querySelector('#pricing video') as HTMLVideoElement;
+    if (video) {
+      // Mark video as loaded when it can play
+      video.addEventListener('canplay', () => {
+        video.setAttribute('data-loaded', 'true');
+      });
+      
+      // Intersection Observer for lazy loading optimization
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            video.load(); // Start loading when video comes into view
+            observer.unobserve(video);
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      observer.observe(video);
+    }
+  });
+</script>

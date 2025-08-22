@@ -1,0 +1,120 @@
+---
+// Contact.astro - Full-screen Spline Component
+---
+
+<!-- Full-screen Spline Component -->
+<section class="zmm-spline-wrap">
+  <!-- Spline Interactive Component -->
+  <iframe
+    class="zmm-spline"
+    src="https://my.spline.design/glassbuttonsinspiredbyreijopalmiste-srFrnLHrWsCpuduY3MW6HM0z/"
+    title="Spline — Glass Buttons Interactive Component"
+    loading="lazy"
+    allow="autoplay; fullscreen; xr-spatial-tracking"
+    allowfullscreen
+    referrerpolicy="no-referrer"
+  ></iframe>
+
+  <!-- Logo Overlay -->
+  <div class="zmm-logo-overlay">
+    <a href="/" class="zmm-logo-link" aria-label="Return to ZeroMotion Marketing home page">
+      <video 
+        class="zmm-logo-video"
+        autoplay 
+        muted 
+        loop 
+        playsinline
+        preload="metadata"
+      >
+        <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm">
+        <!-- Fallback for browsers that don't support WebM -->
+        <source src="/media/ZeroMotion-Transparent.mov" type="video/mp4">
+      </video>
+    </a>
+  </div>
+</section>
+
+<style>
+  .zmm-spline-wrap {
+    position: relative;
+    inset: 0;
+    width: 100%;
+    /* svh handles iOS dynamic address bar better than vh */
+    height: 100svh;
+    background: #000;
+    overflow: hidden;
+  }
+
+  .zmm-spline {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    /* Full pointer events for Spline interactions */
+    pointer-events: auto;
+  }
+
+  .zmm-logo-overlay {
+    position: absolute;
+    top: clamp(16px, 3vh, 32px);
+    left: clamp(16px, 3vw, 32px);
+    z-index: 10;
+    /* Prevent logo from interfering with Spline interactions */
+    pointer-events: none;
+  }
+
+  .zmm-logo-link {
+    display: block;
+    /* Re-enable pointer events for the logo link */
+    pointer-events: auto;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .zmm-logo-link:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+
+  .zmm-logo-link:active {
+    transform: scale(0.98);
+  }
+
+  .zmm-logo-video {
+    display: block;
+    width: clamp(80px, 12vw, 120px);
+    height: auto;
+    /* Maintain aspect ratio */
+    object-fit: contain;
+    /* Smooth edges */
+    border-radius: 6px;
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 480px) {
+    .zmm-logo-overlay {
+      top: 12px;
+      left: 12px;
+    }
+    
+    .zmm-logo-video {
+      width: clamp(60px, 15vw, 80px);
+    }
+  }
+</style>
+
+<script>
+  // iOS viewport fix on orientation changes for the Spline component
+  const setSVH = () => {
+    const element = document.querySelector('.zmm-spline-wrap') as HTMLElement;
+    if (element) {
+      element.style.setProperty('height', window.innerHeight + 'px');
+    }
+  };
+  window.addEventListener('resize', setSVH);
+  window.addEventListener('orientationchange', setSVH);
+  setSVH();
+</script>

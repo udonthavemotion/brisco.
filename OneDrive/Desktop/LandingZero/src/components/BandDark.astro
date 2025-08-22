@@ -1,0 +1,18 @@
+---
+// BandDark.astro - Dark background band layout component
+interface Props {
+  id?: string;
+  class?: string;
+}
+
+const { id, class: className } = Astro.props;
+---
+
+<section 
+  id={id}
+  class={`py-16 md:py-24 bg-neutral-950 ${className || ''}`}
+>
+  <div class="container mx-auto px-4">
+    <slot />
+  </div>
+</section>

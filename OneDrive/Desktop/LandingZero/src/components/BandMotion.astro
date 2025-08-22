@@ -1,0 +1,56 @@
+---
+// BandMotion.astro - Motion band with background media and overlay
+interface Props {
+  src?: string;
+  poster?: string;
+  overlay?: 'dark' | 'light' | 'none';
+  height?: 'md' | 'lg';
+  class?: string;
+}
+
+const { 
+  src, 
+  poster, 
+  overlay = 'dark', 
+  height = 'md',
+  class: className 
+} = Astro.props;
+
+const heightClasses = height === 'lg' ? 'py-24' : 'py-16';
+const isVideo = src?.endsWith('.mp4');
+---
+
+<section class={`relative ${heightClasses} overflow-hidden ${className || ''}`}>
+  {src ? (
+    isVideo ? (
+      <video 
+        autoplay 
+        muted 
+        loop 
+        playsinline 
+        preload="auto" 
+        poster={poster}
+        class="absolute inset-0 w-full h-full object-cover opacity-90"
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+    ) : (
+      <img 
+        src={src} 
+        alt="" 
+        class="absolute inset-0 w-full h-full object-cover opacity-90" 
+        loading="lazy" 
+      />
+    )
+  ) : (
+    <div class="absolute inset-0 bg-gradient-to-b from-purple-700/20 via-purple-600/10 to-black/40"></div>
+  )}
+  
+  {overlay !== 'none' && (
+    <div class={`absolute inset-0 ${overlay === 'dark' ? 'bg-black/40' : 'bg-white/20'}`}></div>
+  )}
+  
+  <div class="relative z-10 container mx-auto px-4">
+    <slot />
+  </div>
+</section>

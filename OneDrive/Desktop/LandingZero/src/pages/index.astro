@@ -1,0 +1,14 @@
+---
+// index.astro - ZeroMotionMarketing landing page
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSpline from '../components/HeroSpline.astro';
+
+const title = 'ZeroMotionMarketing — AI-Powered Web & Marketing';
+const description = 'Websites, PPC, and automation engineered to convert in Louisiana. Mobile-first builds, AI lead capture, and GoHighLevel integrations.';
+const canonicalUrl = 'https://zeromotionmarketing.com/';
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={canonicalUrl}>
+  <!-- Hero Section with Spline -->
+  <HeroSpline />
+</BaseLayout>

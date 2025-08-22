@@ -1,0 +1,144 @@
+---
+// HeroSpline.astro - Full-screen hero with Spline embed
+---
+
+<section class="relative min-h-[90svh] md:min-h-screen overflow-hidden">
+  <!-- Spline iframe container with 25% zoom scale -->
+  <div class="hero-spline-container">
+    <iframe
+      src="https://my.spline.design/orb-E5M8vNSi9bBYeNhNP5hk3DcJ/"
+      title="ZeroMotion Spline"
+      loading="eager"
+      class="w-full h-full"
+      style="border:0;"
+      allow="fullscreen; xr-spatial-tracking"
+    ></iframe>
+  </div>
+  
+  <!-- overlay for contrast -->
+  <div class="absolute inset-0 bg-black/45"></div>
+  
+  <!-- centered content -->
+  <div class="relative z-10 container mx-auto px-4 flex items-center justify-center min-h-[90svh] md:min-h-screen text-center">
+    <div class="max-w-xl mx-auto">
+      <!-- ZeroMotion Logo Video -->
+      <div class="mb-8 flex justify-center">
+        <video 
+          class="hero-logo-video"
+          autoplay 
+          muted 
+          loop 
+          playsinline
+          preload="metadata"
+        >
+          <source src="/media/ZeroMotion-Transparent-OBS-v2.webm" type="video/webm">
+          <!-- Fallback for browsers that don't support WebM -->
+          <source src="/media/ZeroMotion-Transparent.mov" type="video/mp4">
+        </video>
+      </div>
+      
+      <div class="mt-8 flex flex-col sm:flex-row gap-6 justify-center items-center">
+        <a 
+          href="/contact" 
+          class="floating-cta primary-cta"
+        >
+          Contact Now
+        </a>
+        <a 
+          href="/pricing" 
+          class="floating-cta secondary-cta"
+        >
+          See Pricing
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-spline-container {
+    position: absolute;
+    inset: 0;
+    width: 400%; /* 1/0.25 = 4x original width to compensate for scale */
+    height: 400%; /* 1/0.25 = 4x original height */
+    transform: scale(0.25);
+    transform-origin: 0 0;
+    overflow: hidden;
+  }
+
+  /* Minimalistic floating CTA styles */
+  .floating-cta {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 0.875rem; /* 14px - smaller text */
+    font-weight: 500; /* medium weight for Inter */
+    letter-spacing: 0.025em;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .primary-cta {
+    color: #ffffff;
+    text-shadow: 
+      0 0 10px rgba(147, 51, 234, 0.6),
+      0 0 20px rgba(147, 51, 234, 0.4),
+      0 0 30px rgba(147, 51, 234, 0.2);
+  }
+
+  .secondary-cta {
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 
+      0 0 8px rgba(255, 255, 255, 0.4),
+      0 0 16px rgba(255, 255, 255, 0.2);
+  }
+
+  .floating-cta:hover {
+    transform: translateY(-2px);
+  }
+
+  .primary-cta:hover {
+    color: #ffffff;
+    text-shadow: 
+      0 0 15px rgba(147, 51, 234, 0.8),
+      0 0 25px rgba(147, 51, 234, 0.6),
+      0 0 35px rgba(147, 51, 234, 0.4);
+  }
+
+  .secondary-cta:hover {
+    color: #ffffff;
+    text-shadow: 
+      0 0 12px rgba(255, 255, 255, 0.6),
+      0 0 20px rgba(255, 255, 255, 0.4);
+  }
+
+  .hero-logo-video {
+    display: block;
+    width: clamp(200px, 25vw, 320px);
+    height: auto;
+    /* Maintain aspect ratio */
+    object-fit: contain;
+    /* Smooth edges */
+    border-radius: 8px;
+    /* Subtle glow effect */
+    filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.1));
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 480px) {
+    .hero-logo-video {
+      width: clamp(160px, 40vw, 240px);
+    }
+    
+    .floating-cta {
+      font-size: 0.8125rem; /* 13px - even smaller on mobile */
+    }
+  }
+
+  /* Tablet adjustments */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .hero-logo-video {
+      width: clamp(180px, 30vw, 280px);
+    }
+  }
+</style>

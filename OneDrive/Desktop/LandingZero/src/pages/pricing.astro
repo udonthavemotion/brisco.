@@ -1,0 +1,14 @@
+---
+// pricing.astro - Pricing page for ZeroMentor
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PricingSpline from '../components/PricingSpline.astro';
+
+const title = 'Pricing - ZeroMentor | AI-Powered Web & Marketing';
+const description = 'Transparent pricing for AI-powered websites, PPC, and automation services. Mobile-first builds, AI lead capture, and GoHighLevel integrations for Louisiana businesses.';
+const canonicalUrl = 'https://zeromotionmarketing.com/pricing';
+---
+
+<BaseLayout title={title} description={description} canonicalUrl={canonicalUrl}>
+  <!-- Pricing Section with 3D Spline Cards -->
+  <PricingSpline />
+</BaseLayout>
