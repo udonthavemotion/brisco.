@@ -2,17 +2,23 @@ import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Resend with API key from environment variables
-const resend = new Resend(import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY || 're_9FU9EPTH_JNAbw7xJ3gRb9spgmE6Lm1dt');
+const resendKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY || 're_9FU9EPTH_JNAbw7xJ3gRb9spgmE6Lm1dt';
+console.log('[BRISC API] Resend API key present:', !!(import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY));
+const resend = new Resend(resendKey);
 
 // Initialize Supabase client for lead capture
 const supabaseUrl = import.meta.env.SUPABASE_URL || process.env.SUPABASE_URL;
-const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseKey = import.meta.env.SUPABASE_KEY || import.meta.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 let supabase = null;
 
-if (supabaseUrl && supabaseServiceKey) {
-  supabase = createClient(supabaseUrl, supabaseServiceKey);
+if (supabaseUrl && supabaseKey) {
+  supabase = createClient(supabaseUrl, supabaseKey);
+  console.log('[BRISC API] Supabase initialized successfully');
 } else {
   console.warn('[BRISC API] Supabase credentials not found. Lead capture will be disabled.');
+  console.warn('[BRISC API] SUPABASE_URL present:', !!supabaseUrl);
+  console.warn('[BRISC API] SUPABASE_KEY present:', !!(import.meta.env.SUPABASE_KEY || process.env.SUPABASE_KEY));
+  console.warn('[BRISC API] SUPABASE_SERVICE_ROLE_KEY present:', !!(import.meta.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY));
 }
 
 export async function POST({ request }) {
@@ -209,7 +215,9 @@ Born in Thibodaux • Built for Leaders • Worn by Legends
       console.error('[BRISC API] Resend error:', error);
       return new Response(JSON.stringify({ 
         error: 'Failed to send email', 
-        details: error.message 
+        details: error.message,
+        leadCaptured: leadCaptured,
+        resendError: error.message
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -222,7 +230,8 @@ Born in Thibodaux • Built for Leaders • Worn by Legends
       success: true, 
       messageId: data.id,
       message: 'Access email sent successfully',
-      leadCaptured: leadCaptured
+      leadCaptured: leadCaptured,
+      supabaseConfigured: !!supabase
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
