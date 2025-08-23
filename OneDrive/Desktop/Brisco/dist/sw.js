@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
   '/favicons/favicon.ico',
   '/favicons/android-chrome-192x192.png',
   '/favicons/android-chrome-512x512.png',
-  '/Untitled design (4).png'
+  '/images/Product%20Assets/M%20copy.png'
 ];
 
 // Install event - cache critical assets
