@@ -4,7 +4,9 @@ import vercel from '@astrojs/vercel/serverless';
 // https://astro.build/config
 export default defineConfig({
   output: 'hybrid', // Allow both static and server-side rendering
-  adapter: vercel(),
+  adapter: vercel({
+    webAnalytics: { enabled: true }
+  }),
   site: 'https://brisco.vercel.app', // Vercel production domain
   compressHTML: true,
   build: {
