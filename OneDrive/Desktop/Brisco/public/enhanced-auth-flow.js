@@ -106,7 +106,7 @@ class BRISCAuthFlow {
 
   async sendAccessEmail(email) {
     try {
-      console.log(`[BRISC Auth] Processing access request for: ${email}`);
+      console.log(`[BRISC Auth] Sending real email to: ${email}`);
       
       // Automatically detect environment and use appropriate API endpoint
       const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -126,37 +126,30 @@ class BRISCAuthFlow {
 
       const data = await response.json();
 
-      // API now always returns success (non-blocking flow)
-      if (response.ok) {
-        console.log(`[BRISC Auth] API response:`, data);
-        return { 
-          success: true, 
-          messageId: data.messageId, 
-          emailSent: data.emailSent,
-          userMessage: data.userMessage,
-          provider: data.provider
-        };
-      } else {
-        // Fallback - should rarely happen with new non-blocking API
-        console.warn('[BRISC Auth] API returned error, but proceeding:', data);
-        return { 
-          success: true, 
-          emailSent: false, 
-          userMessage: 'Check your email for the access code',
-          fallback: true 
-        };
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}: Failed to send email`);
       }
 
-    } catch (error) {
-      console.error('[BRISC Auth] Email request failed:', error);
-      
-      // Return success anyway - non-blocking flow
+      console.log(`[BRISC Auth] Email sent successfully via GHL:`, data);
       return { 
         success: true, 
-        emailSent: false, 
-        userMessage: 'Check your email for the access code',
-        error: error.message 
+        emailSent: true,
+        userMessage: 'Access code sent! Check your email.',
+        provider: 'GoHighLevel',
+        ghlStatus: data.ghlStatus
       };
+
+    } catch (error) {
+      console.error('[BRISC Auth] Email sending failed:', error);
+      
+      // Provide user-friendly error messages
+      if (error.message.includes('Invalid email')) {
+        throw new Error('Please enter a valid email address');
+      } else if (error.message.includes('Network')) {
+        throw new Error('Network error. Please check your connection and try again');
+      } else {
+        throw new Error('Failed to send email. Please try again in a moment');
+      }
     }
   }
 

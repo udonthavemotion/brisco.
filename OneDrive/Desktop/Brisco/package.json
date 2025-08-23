@@ -3,14 +3,17 @@
   "type": "module",
   "version": "0.0.1",
   "engines": {
-    "node": ">=18.0.0"
+    "node": "20.x"
   },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy:vercel": "bash scripts/deploy-vercel.sh main",
+    "deploy:vercel:win": "powershell -ExecutionPolicy Bypass -File scripts/deploy-vercel.ps1 -Branch main",
+    "verify:vercel": "VERCEL=1 vercel build --confirm"
   },
   "dependencies": {
     "@astrojs/vercel": "^7.8.2",
@@ -21,6 +24,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.3.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vercel": "^37.14.0"
   }
 }
