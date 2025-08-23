@@ -36,6 +36,11 @@ const siteDescription = 'BRISC: Streetwear born in Thibodaux, Louisiana. Rooted 
   <title>BRISC Exclusive Access - Be Your Own Light | Thibodaux Streetwear</title>
   <meta name="description" content="BRISC: Streetwear born in Thibodaux, Louisiana. Rooted in discipline, pride, and Southern strength, built for the modern world. Be your own light.">
   
+  <!-- Cache Control Headers -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
   <!-- SEO Meta Tags -->
   <meta name="keywords" content="streetwear, fashion, BRISC, Khalil Brisco, Thibodaux, Louisiana, urban wear, limited edition, torch, flame, be your own light, Southern streetwear">
   <meta name="author" content="Khalil Brisco">
@@ -67,7 +72,7 @@ const siteDescription = 'BRISC: Streetwear born in Thibodaux, Louisiana. Rooted 
   <link rel="icon" type="image/png" sizes="512x512" href="/images/favico/android-chrome-512x512.png">
   
   <!-- PWA Manifest -->
-  <link rel="manifest" href="/images/favico/site.webmanifest">
+  <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -103,43 +108,60 @@ const siteDescription = 'BRISC: Streetwear born in Thibodaux, Louisiana. Rooted 
 </head>
 
 <body>
-  <!-- Refined Hyper-Minimalistic Teaser Gate -->
-  <div id="teaser-gate" class="refined-gate">
-    <div class="refined-gate-content">
-      <!-- Brisco Logo with Flame Flicker -->
-      <img src="/images/Product%20Assets/M%20copy.png" alt="BRISC" class="refined-logo" aria-label="BRISC logo" />
-      
-      <!-- Brisco Brand Text -->
-      <h1 class="refined-brand-text">BRISC<span class="animated-period">.</span></h1>
-      
-      <!-- Subtitle -->
-      <p class="refined-subtitle">Sign up for exclusive access to drops</p>
-      
-      <!-- Email Signup -->
-      <div class="refined-email-section">
-        <input 
-          type="email" 
-          placeholder="Your email" 
-          class="refined-email-input"
-          id="teaser-email"
-          aria-label="Email address for exclusive access"
-        />
-        <button class="refined-btn refined-btn-subscribe" id="teaser-email-btn">
-          SUBSCRIBE
-        </button>
+  <!-- BRISC Enhanced Authentication Gate -->
+  <div id="brisc-auth-gate" class="enhanced-auth-gate">
+    <!-- Email Step -->
+    <div id="email-step" class="auth-step email-step">
+      <div class="auth-content">
+        <img src="/images/Product%20Assets/M%20copy.png" alt="BRISC" class="auth-logo" aria-label="BRISC logo" />
+        
+        <h1 class="auth-title">EXCLUSIVE ACCESS</h1>
+        <p class="auth-subtitle">Enter your email to receive access credentials</p>
+        
+        <div class="auth-form">
+          <input 
+            type="email" 
+            id="auth-email"
+            placeholder="your@email.com"
+            class="auth-input"
+            autocomplete="email"
+            aria-label="Email address for exclusive access"
+          />
+          <button id="email-submit-btn" class="auth-btn primary">
+            GET ACCESS
+          </button>
+        </div>
+        
+        <p class="auth-note">You'll receive an email with your access password</p>
       </div>
-      
-      <!-- Password Entry -->
-      <div class="refined-password-section">
-        <input 
-          type="password" 
-          placeholder="Enter using password" 
-          class="refined-password-input"
-          id="teaser-password"
-          aria-label="Password for immediate access"
-        />
-        <button class="refined-btn refined-btn-enter" id="teaser-password-btn">
-          ENTER
+    </div>
+
+    <!-- Password Step -->
+    <div id="password-step" class="auth-step password-step" style="display: none;">
+      <div class="auth-content">
+        <img src="/images/Product%20Assets/M%20copy.png" alt="BRISC" class="auth-logo" aria-label="BRISC logo" />
+        
+        <h1 class="auth-title">CHECK YOUR EMAIL</h1>
+        <p class="auth-subtitle">
+          We sent access credentials to<br>
+          <strong id="email-display"></strong>
+        </p>
+        
+        <div class="auth-form">
+          <input 
+            type="password" 
+            id="auth-password"
+            placeholder="Enter password from email"
+            class="auth-input"
+            aria-label="Password for immediate access"
+          />
+          <button id="password-submit-btn" class="auth-btn primary">
+            ENTER
+          </button>
+        </div>
+        
+        <button id="back-to-email-btn" class="auth-btn secondary">
+          ← Use Different Email
         </button>
       </div>
     </div>
@@ -185,7 +207,7 @@ const siteDescription = 'BRISC: Streetwear born in Thibodaux, Louisiana. Rooted 
     <section class="products" id="products">
       <div class="container">
         <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem; font-weight: 300;">
-          BRISC<span class="animated-period">.</span> — Be Your Own Light Capsule
+          Be Your Own Light Capsule
         </h2>
         
         <div class="product-grid">
@@ -211,12 +233,32 @@ const siteDescription = 'BRISC: Streetwear born in Thibodaux, Louisiana. Rooted 
       </div>
     </section>
 
+    <!-- Shirt Showcase Section -->
+    <section class="shirt-showcase" id="showcase">
+      <div class="container">
+        <div class="showcase-grid">
+          <div class="showcase-item">
+            <img src="/images/Untitled design (9).png" alt="BRISC Shirt Design" class="showcase-image" loading="lazy" />
+          </div>
+          <div class="showcase-item">
+            <img src="/images/Untitled design (8).png" alt="BRISC Shirt Design" class="showcase-image" loading="lazy" />
+          </div>
+          <div class="showcase-item">
+            <img src="/images/Untitled design (10).png" alt="BRISC Shirt Design" class="showcase-image" loading="lazy" />
+          </div>
+          <div class="showcase-item">
+            <img src="/images/Untitled design (12).png" alt="BRISC Shirt Design" class="showcase-image" loading="lazy" />
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Minimal Footer -->
     <footer class="footer" id="contact">
       <div class="container">
         <div class="footer-content">
           <div class="footer-brand">
-            <h3>BRISC<span class="animated-period">.</span></h3>
+            <img src="/images/Product%20Assets/M%20copy.png" alt="BRISC" class="footer-logo" />
           </div>
           
           <div class="footer-newsletter">
@@ -250,14 +292,45 @@ const siteDescription = 'BRISC: Streetwear born in Thibodaux, Louisiana. Rooted 
 
   <!-- Scripts -->
   <script is:inline src="/cart.js"></script>
-  <script is:inline src="/password.js"></script>
+  <script is:inline src="/enhanced-auth-flow.js"></script>
   
   <!-- Service Worker Registration for PWA -->
   <script>
+    // Clear old caches and force service worker update
+    async function clearOldCaches() {
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        const oldCaches = cacheNames.filter(name => name.startsWith('brisco-v') && !name.includes(Date.now().toString().substring(0, 8)));
+        await Promise.all(oldCaches.map(name => caches.delete(name)));
+        console.log('[BRISC] Cleared old caches:', oldCaches);
+      }
+    }
+
     if ('serviceWorker' in navigator) {
+      // Clear old caches first
+      clearOldCaches();
+      
       navigator.serviceWorker.register('/sw.js')
         .then((registration) => {
           console.log('[BRISC] Service Worker registered:', registration);
+          
+          // Check for updates every 30 seconds
+          setInterval(() => {
+            registration.update();
+          }, 30000);
+          
+          // Listen for new service worker
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('[BRISC] New service worker available, refreshing...');
+                  window.location.reload();
+                }
+              });
+            }
+          });
         })
         .catch((error) => {
           console.log('[BRISC] Service Worker registration failed:', error);
@@ -265,6 +338,38 @@ const siteDescription = 'BRISC: Streetwear born in Thibodaux, Louisiana. Rooted 
     }
   </script>
   
+  <!-- Cache Debugging Tools -->
+  <script>
+    // Developer cache clearing function (accessible via console)
+    (window as any).clearBriscoCache = async function() {
+      console.log('[BRISC] Clearing all caches...');
+      
+      // Clear all caches
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+        console.log('[BRISC] Cleared caches:', cacheNames);
+      }
+      
+      // Unregister service worker
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(reg => reg.unregister()));
+        console.log('[BRISC] Unregistered service workers');
+      }
+      
+      // Clear local storage
+      localStorage.clear();
+      sessionStorage.clear();
+      console.log('[BRISC] Cleared storage');
+      
+      // Force reload
+      window.location.reload();
+    };
+    
+    console.log('[BRISC] Cache debugging tools loaded. Use clearBriscoCache() to force clear all caches.');
+  </script>
+
   <!-- Minimal Analytics -->
   <script>
     // GHL Integration: Track page views

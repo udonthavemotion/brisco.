@@ -8,16 +8,18 @@ const resend = new Resend(resendKey);
 
 // Initialize Supabase client for lead capture
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseKey = process.env.SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 let supabase = null;
 
-if (supabaseUrl && supabaseServiceKey) {
-  supabase = createClient(supabaseUrl, supabaseServiceKey);
+if (supabaseUrl && supabaseKey) {
+  supabase = createClient(supabaseUrl, supabaseKey);
   console.log('[BRISC API] Supabase initialized successfully');
 } else {
   console.warn('[BRISC API] Supabase credentials not found. Lead capture will be disabled.');
   console.warn('[BRISC API] SUPABASE_URL present:', !!supabaseUrl);
-  console.warn('[BRISC API] SUPABASE_SERVICE_ROLE_KEY present:', !!supabaseServiceKey);
+  console.warn('[BRISC API] SUPABASE_KEY present:', !!process.env.SUPABASE_KEY);
+  console.warn('[BRISC API] SUPABASE_SERVICE_ROLE_KEY present:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+  console.warn('[BRISC API] SUPABASE_ANON_KEY present:', !!process.env.SUPABASE_ANON_KEY);
 }
 
 export default async function handler(req, res) {

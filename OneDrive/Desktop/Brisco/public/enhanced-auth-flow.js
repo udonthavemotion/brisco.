@@ -104,7 +104,15 @@ class BRISCAuthFlow {
     try {
       console.log(`[BRISC Auth] Sending real email to: ${email}`);
       
-      const response = await fetch('/api/send-access-email', {
+      // Automatically detect environment and use appropriate API endpoint
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const apiUrl = isLocalhost 
+        ? `${window.location.origin}/api/send-access-email`  // Local development (use current port)
+        : '/api/send-access-email';  // Production (Vercel)
+      
+      console.log(`[BRISC Auth] Using API endpoint: ${apiUrl}`);
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

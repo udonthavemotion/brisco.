@@ -14,7 +14,9 @@ class BriscoCart {
   addItem(product) {
     console.log('Adding item to cart:', product);
     
-    const existingItem = this.items.find(item => item.id === product.id);
+    // Create unique identifier including size
+    const itemKey = `${product.id}-${product.size || 'no-size'}`;
+    const existingItem = this.items.find(item => item.itemKey === itemKey);
     
     if (existingItem) {
       existingItem.quantity += 1;
@@ -22,9 +24,11 @@ class BriscoCart {
     } else {
       const newItem = {
         id: product.id,
+        itemKey: itemKey,
         name: product.name,
         price: product.price,
         frontImg: product.frontImg,
+        size: product.size || null,
         quantity: 1
       };
       this.items.push(newItem);
@@ -35,23 +39,23 @@ class BriscoCart {
     this.showToast("Thank you, sincerely, Family.");
   }
 
-  removeItem(productId) {
-    const itemIndex = this.items.findIndex(item => item.id === productId);
+  removeItem(itemKey) {
+    const itemIndex = this.items.findIndex(item => item.itemKey === itemKey);
     
     if (itemIndex > -1) {
       const removedItem = this.items[itemIndex];
       this.items.splice(itemIndex, 1);
       this.updateCartUI();
-      this.showToast(`${removedItem.name} removed from cart`);
+      this.showToast(`${removedItem.name}${removedItem.size ? ` (${removedItem.size})` : ''} removed from cart`);
     }
   }
 
-  updateQuantity(productId, newQuantity) {
-    const item = this.items.find(item => item.id === productId);
+  updateQuantity(itemKey, newQuantity) {
+    const item = this.items.find(item => item.itemKey === itemKey);
     
     if (item) {
       if (newQuantity <= 0) {
-        this.removeItem(productId);
+        this.removeItem(itemKey);
       } else {
         item.quantity = newQuantity;
         this.updateCartUI();
@@ -60,11 +64,33 @@ class BriscoCart {
   }
 
   getTotal() {
-    return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return this.calculateTotalWithDeals();
+  }
+
+  // Automatic pricing algorithm - applies deals without visual indication
+  calculateTotalWithDeals() {
+    const totalQuantity = this.getItemCount();
+    const effectivePrice = this.getEffectivePrice();
+    
+    // Simple calculation: total quantity × effective price per item
+    return totalQuantity * effectivePrice;
   }
 
   getItemCount() {
     return this.items.reduce((count, item) => count + item.quantity, 0);
+  }
+
+  // Calculate effective price per item based on quantity tiers
+  getEffectivePrice() {
+    const totalQuantity = this.getItemCount();
+    
+    if (totalQuantity >= 4) {
+      return 50; // $50 per shirt for 4+ shirts
+    } else if (totalQuantity >= 2) {
+      return 55; // $55 per shirt for 2-3 shirts
+    } else {
+      return 65; // $65 per shirt for 1 shirt
+    }
   }
 
   updateCartUI() {
@@ -90,6 +116,47 @@ class BriscoCart {
     }
   }
 
+  updatePricingInfo() {
+    const totalQuantity = this.getItemCount();
+    const effectivePrice = this.getEffectivePrice();
+    
+    // Find or create pricing info element
+    let pricingInfo = document.getElementById('pricing-info');
+    if (!pricingInfo) {
+      pricingInfo = document.createElement('div');
+      pricingInfo.id = 'pricing-info';
+      pricingInfo.className = 'pricing-info';
+      
+      // Insert before cart total
+      const cartFooter = document.querySelector('.cart-footer');
+      const cartTotal = document.querySelector('.cart-total');
+      if (cartFooter && cartTotal) {
+        cartFooter.insertBefore(pricingInfo, cartTotal);
+      }
+    }
+    
+    if (totalQuantity === 0) {
+      pricingInfo.style.display = 'none';
+      return;
+    }
+    
+    pricingInfo.style.display = 'block';
+    
+    let pricingText = '';
+    if (totalQuantity >= 4) {
+      pricingText = `🔥 4+ shirts: $50 each`;
+    } else if (totalQuantity >= 2) {
+      pricingText = `💫 2+ shirts: $55 each`;
+    } else {
+      pricingText = `Single shirt: $65`;
+    }
+    
+    pricingInfo.innerHTML = `
+      <div class="pricing-tier">${pricingText}</div>
+      <div class="pricing-savings">${totalQuantity} × $${effectivePrice} = $${(totalQuantity * effectivePrice).toFixed(2)}</div>
+    `;
+  }
+
   updateCartDrawer() {
     const cartItems = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
@@ -103,6 +170,9 @@ class BriscoCart {
     
     // Update total
     cartTotal.textContent = this.getTotal().toFixed(2);
+    
+    // Add pricing tier info
+    this.updatePricingInfo();
     
     // Clear current items
     cartItems.innerHTML = '';
@@ -118,6 +188,8 @@ class BriscoCart {
     }
     
     // Populate cart items
+    const effectivePrice = this.getEffectivePrice();
+    
     this.items.forEach(item => {
       console.log('Creating cart item for:', item.name);
       const cartItem = document.createElement('div');
@@ -125,13 +197,13 @@ class BriscoCart {
       cartItem.innerHTML = `
         <img src="${item.frontImg}" alt="${item.name}" class="cart-item-image" />
         <div class="cart-item-info">
-          <div class="cart-item-name">${item.name}</div>
-          <div class="cart-item-price">$${item.price}</div>
+          <div class="cart-item-name">${item.name}${item.size ? ` (${item.size})` : ''}</div>
+          <div class="cart-item-price">$${effectivePrice}</div>
         </div>
         <div class="cart-item-controls">
-          <button class="quantity-btn" onclick="window.briscoCart.updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+          <button class="quantity-btn" onclick="window.briscoCart.updateQuantity('${item.itemKey}', ${item.quantity - 1})">-</button>
           <span class="quantity-display">${item.quantity}</span>
-          <button class="quantity-btn" onclick="window.briscoCart.updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+          <button class="quantity-btn" onclick="window.briscoCart.updateQuantity('${item.itemKey}', ${item.quantity + 1})">+</button>
         </div>
       `;
       cartItems.appendChild(cartItem);
@@ -248,6 +320,42 @@ class BriscoCart {
     console.log('Testing cart with product:', testProduct);
     this.addItem(testProduct);
     this.openCartDrawer();
+  }
+
+  // Test pricing algorithm
+  testPricingAlgorithm() {
+    console.log('=== Testing Pricing Algorithm ===');
+    
+    // Test scenarios - simplified pricing
+    const scenarios = [
+      { qty: 1, expected: 65 },  // 1 × $65
+      { qty: 2, expected: 110 }, // 2 × $55
+      { qty: 3, expected: 165 }, // 3 × $55
+      { qty: 4, expected: 200 }, // 4 × $50
+      { qty: 5, expected: 250 }, // 5 × $50
+      { qty: 6, expected: 300 }, // 6 × $50
+      { qty: 7, expected: 350 }, // 7 × $50
+      { qty: 8, expected: 400 }  // 8 × $50
+    ];
+    
+    scenarios.forEach(scenario => {
+      // Simulate cart with specific quantity
+      this.items = [{
+        id: 1,
+        name: 'Test Shirt',
+        price: 65,
+        quantity: scenario.qty
+      }];
+      
+      const calculatedTotal = this.calculateTotalWithDeals();
+      const passed = calculatedTotal === scenario.expected;
+      
+      console.log(`Qty: ${scenario.qty} | Expected: $${scenario.expected} | Got: $${calculatedTotal} | ${passed ? '✅ PASS' : '❌ FAIL'}`);
+    });
+    
+    // Reset cart
+    this.items = [];
+    console.log('=== Test Complete ===');
   }
 }
 

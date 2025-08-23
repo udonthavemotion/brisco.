@@ -111,7 +111,29 @@ class BriscoCart {
   }
 
   getTotal() {
-    return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return this.calculateTotalWithDeals();
+  }
+
+  // Automatic pricing algorithm - applies deals without visual indication
+  calculateTotalWithDeals() {
+    const totalQuantity = this.getItemCount();
+    const basePrice = 65; // Base price per shirt
+    
+    // Apply quantity-based pricing tiers automatically
+    if (totalQuantity >= 4) {
+      // 4+ shirts: $200 for every 4, plus remaining at $65 each
+      const groupsOfFour = Math.floor(totalQuantity / 4);
+      const remainder = totalQuantity % 4;
+      return (groupsOfFour * 200) + (remainder * basePrice);
+    } else if (totalQuantity >= 2) {
+      // 2-3 shirts: $110 for every 2, plus remaining at $65 each
+      const groupsOfTwo = Math.floor(totalQuantity / 2);
+      const remainder = totalQuantity % 2;
+      return (groupsOfTwo * 110) + (remainder * basePrice);
+    } else {
+      // 1 shirt: regular price $65
+      return totalQuantity * basePrice;
+    }
   }
 
   getItemCount() {

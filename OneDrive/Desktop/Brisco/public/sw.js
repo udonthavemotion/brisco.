@@ -1,19 +1,8 @@
-self.addEventListener('install', () => {
-	self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-	event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', () => {
-	// passthrough fetch; no caching for now
-});
-
 // BRISC Service Worker - Minimal PWA Support
 // Scientifically optimized for streetwear site performance
 
-const CACHE_NAME = 'brisco-v1';
+const CACHE_VERSION = Date.now(); // Dynamic cache versioning
+const CACHE_NAME = `brisco-v${CACHE_VERSION}`;
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -55,20 +44,47 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - serve from cache with network fallback
+// Fetch event - network-first strategy for better cache invalidation
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
-      })
-      .catch(() => {
-        // Fallback for offline
-        if (event.request.destination === 'document') {
-          return caches.match('/');
-        }
-      })
-  );
+  const { request } = event;
+  
+  // Skip non-GET requests
+  if (request.method !== 'GET') return;
+  
+  // Network-first strategy for HTML documents to avoid stale content
+  if (request.destination === 'document') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          // Cache the fresh response
+          if (response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME)
+              .then((cache) => cache.put(request, responseClone));
+          }
+          return response;
+        })
+        .catch(() => {
+          // Fallback to cache only if network fails
+          return caches.match(request) || caches.match('/');
+        })
+    );
+  } else {
+    // Cache-first for static assets (images, fonts, etc.)
+    event.respondWith(
+      caches.match(request)
+        .then((response) => {
+          return response || fetch(request)
+            .then((fetchResponse) => {
+              if (fetchResponse.status === 200) {
+                const responseClone = fetchResponse.clone();
+                caches.open(CACHE_NAME)
+                  .then((cache) => cache.put(request, responseClone));
+              }
+              return fetchResponse;
+            });
+        })
+    );
+  }
 });
 

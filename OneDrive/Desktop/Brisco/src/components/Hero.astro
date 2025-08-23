@@ -2,7 +2,7 @@
 ---
 // Minimal hero - single centerpiece image
 const mainCenterpiece = {
-  src: '/images/fatlil.2_1755650727_3702989146314406154_305151088.jpg',
+  src: '/images/Product Assets/brevisidsg1.png',
   alt: 'BRISC Collection - Be Your Own Light'
 };
 ---
@@ -10,9 +10,7 @@ const mainCenterpiece = {
 <section class="minimal-hero" id="home">
   <div class="container">
     <div class="minimal-hero-content">
-      <h1 class="minimal-brand">BRISC<span class="animated-period">.</span></h1>
-      <p class="minimal-tagline">BE YOUR OWN LIGHT.</p>
-      <p class="minimal-secondary-tagline">From Thibodaux to the world — built for leaders, not followers.</p>
+      <img src="/images/Product%20Assets/M%20copy.png" alt="BRISC" class="hero-logo" />
       
       <!-- Single Centerpiece Image with Levitation -->
       <div class="minimal-centerpiece">
@@ -50,16 +48,21 @@ const mainCenterpiece = {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
     width: 100%;
   }
 
-  .minimal-brand {
-    font-size: 3rem;
-    font-weight: 300;
-    letter-spacing: 0.2em;
-    margin: 0;
-    color: #ffffff;
+  .hero-logo {
+    max-width: 120px;
+    height: auto;
+    animation: flameFlicker 2s ease-in-out infinite;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 0 20px rgba(245, 245, 245, 0.1));
+  }
+
+  @keyframes flameFlicker {
+    0%, 100% { opacity: 0.9; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
   }
 
   .minimal-tagline {
@@ -135,12 +138,12 @@ const mainCenterpiece = {
     }
     
     .minimal-hero-content {
-      gap: 1.5rem;
+      gap: 1.2rem;
       padding: 0 1rem;
     }
     
-    .minimal-brand {
-      font-size: 2.2rem;
+    .hero-logo {
+      max-width: 100px;
     }
     
     .minimal-tagline {
@@ -169,12 +172,12 @@ const mainCenterpiece = {
     }
     
     .minimal-hero-content {
-      gap: 1.2rem;
+      gap: 1rem;
       padding: 0 0.8rem;
     }
     
-    .minimal-brand {
-      font-size: 1.8rem;
+    .hero-logo {
+      max-width: 80px;
     }
     
     .minimal-tagline {
