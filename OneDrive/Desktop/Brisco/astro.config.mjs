@@ -8,8 +8,8 @@ export default defineConfig({
     webAnalytics: { enabled: true },
     functionPerRoute: false,
     edgeMiddleware: false,
-    // Explicitly set runtime to avoid conflicts
-    runtime: 'nodejs18.x'
+    // Use the latest supported Node.js runtime
+    runtime: 'nodejs20.x'
   }),
   site: 'https://brisco.vercel.app', // Vercel production domain
   compressHTML: true,
