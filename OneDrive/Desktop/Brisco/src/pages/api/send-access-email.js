@@ -42,7 +42,7 @@ export async function POST({ request }) {
       });
     }
 
-    console.log(`[BRISC API] Processing access request for: ${email}`);
+    console.log(`[BRISC API] Processing access request for: ${email} - v2.0`);
 
     // Step 1: Capture lead in Supabase (if configured)
     let leadCaptured = false;
