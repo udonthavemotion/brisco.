@@ -593,9 +593,31 @@ section {
   justify-content: center;
   cursor: pointer;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   box-shadow: none;
+}
+
+/* Sticky cart enhancement for mobile scrolling */
+.cart-icon.torch-cart.scrolled {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: cartEnhance 0.3s ease-out;
+}
+
+@keyframes cartEnhance {
+  0% {
+    background: transparent;
+    box-shadow: none;
+    transform: scale(1);
+  }
+  100% {
+    background: rgba(0, 0, 0, 0.85);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transform: scale(1);
+  }
 }
 
 .cart-icon.torch-cart:hover {
@@ -975,6 +997,24 @@ section {
     padding: 0 1rem;
     top: max(1.5rem, env(safe-area-inset-top, 1.5rem));
     right: max(1.5rem, env(safe-area-inset-right, 1.5rem));
+  }
+  
+  /* Enhanced mobile sticky cart */
+  .cart-icon.torch-cart.scrolled {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+    transform: scale(1.02);
+  }
+  
+  .cart-icon.torch-cart.scrolled:hover {
+    transform: scale(1.12);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  }
+  
+  .cart-icon.torch-cart.scrolled .cart-letter {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
   }
   
   .torch-icon {

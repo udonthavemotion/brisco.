@@ -13,7 +13,7 @@ class BRISCAuthFlow {
     this.bindElements();
     this.setupEventListeners();
     this.checkExistingAccess();
-    this.showEmailStep();
+    this.checkDirectAccess();
   }
 
   bindElements() {
@@ -86,8 +86,8 @@ class BRISCAuthFlow {
       // Track email submission
       this.trackEvent('email_submitted', { email });
       
-      // Show success message
-      this.showToast('Access credentials sent to your email.', 'success');
+      // Show demo message with access code
+      this.showToast('DEMO MODE: Use access code "light2025" below', 'success');
       
       // Transition to password step after brief delay
       setTimeout(() => {
@@ -95,14 +95,14 @@ class BRISCAuthFlow {
       }, 1500);
       
     } catch (error) {
-      this.showToast('Failed to send email. Please try again.', 'error');
+      this.showToast('Demo setup failed. Please try again.', 'error');
       this.hideLoading(this.emailBtn, 'GET ACCESS');
     }
   }
 
   async sendAccessEmail(email) {
     try {
-      console.log(`[BRISC Auth] Sending real email to: ${email}`);
+      console.log(`[BRISC Auth] Demo mode - processing email: ${email}`);
       
       // Automatically detect environment and use appropriate API endpoint
       const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -126,19 +126,19 @@ class BRISCAuthFlow {
         throw new Error(data.error || `HTTP ${response.status}: Failed to send email`);
       }
 
-      console.log(`[BRISC Auth] Email sent successfully:`, data);
-      return { success: true, messageId: data.messageId };
+      console.log(`[BRISC Auth] Demo mode response:`, data);
+      return { success: true, messageId: data.messageId, demoMode: data.demoMode };
 
     } catch (error) {
       console.error('[BRISC Auth] Email sending failed:', error);
       
-      // Provide user-friendly error messages
+      // Provide user-friendly error messages for demo mode
       if (error.message.includes('Invalid email')) {
         throw new Error('Please enter a valid email address');
       } else if (error.message.includes('Network')) {
         throw new Error('Network error. Please check your connection and try again');
       } else {
-        throw new Error('Failed to send email. Please try again in a moment');
+        throw new Error('Demo setup failed. Please try again in a moment');
       }
     }
   }
@@ -208,7 +208,7 @@ class BRISCAuthFlow {
     const password = this.passwordInput.value.trim();
     
     if (!password) {
-      this.showToast('Please enter the password from your email', 'error');
+      this.showToast('Please enter the access code: light2025', 'error');
       return;
     }
     
@@ -219,7 +219,7 @@ class BRISCAuthFlow {
       if (this.verifyPassword(password)) {
         this.grantAccess();
       } else {
-        this.showToast('Incorrect password. Check your email and try again.', 'error');
+        this.showToast('Incorrect access code. Use "light2025" and try again.', 'error');
         this.passwordInput.value = '';
         this.hideLoading(this.passwordBtn, 'ENTER');
         
@@ -352,7 +352,7 @@ class BRISCAuthFlow {
       if (hoursElapsed < 24) {
         this.authContainer.style.display = 'none';
         this.showStore();
-        return;
+        return true;
       }
     }
     
@@ -360,6 +360,39 @@ class BRISCAuthFlow {
     sessionStorage.removeItem('brisco_access_granted');
     sessionStorage.removeItem('brisco_user_email');
     sessionStorage.removeItem('brisco_access_time');
+    return false;
+  }
+
+  checkDirectAccess() {
+    // If user already has valid access, don't show auth at all
+    if (this.checkExistingAccess()) {
+      return;
+    }
+
+    // Check for direct access parameter from email
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessParam = urlParams.get('access');
+    
+    if (accessParam === 'direct') {
+      console.log('[BRISC Auth] Direct access detected from email - skipping to password step');
+      
+      // Clear the URL parameter for cleaner experience
+      const url = new URL(window.location);
+      url.searchParams.delete('access');
+      window.history.replaceState({}, document.title, url.pathname + url.search);
+      
+      // Set a placeholder email for direct access
+      this.userEmail = 'direct-access@email.com';
+      
+      // Show password step directly
+      this.showPasswordStep();
+      
+      // Show helpful message
+      this.showToast('Enter the access code from your email', 'info');
+    } else {
+      // Normal flow - show email step
+      this.showEmailStep();
+    }
   }
 }
 

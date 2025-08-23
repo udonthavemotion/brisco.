@@ -54,17 +54,49 @@ Once deployed, test the email functionality on your live site:
 - **Subject:** `🔥 Your BRISC Exclusive Access Code - Be Your Own Light`
 - **Access Code:** `light2025`
 
-### Verified Email
-Currently only `godspeedbulldogs@gmail.com` can receive emails because:
-1. Using Resend's default `onboarding@resend.dev` sender
-2. Domain `brisclothing.com` not verified with Resend yet
+### Email Delivery Status
+**ISSUE IDENTIFIED**: Emails are currently routing to your personal email instead of clients.
 
-### To Send to Any Email (Optional)
-1. Verify your domain `brisclothing.com` with Resend
-2. Update sender to `access@brisclothing.com`
-3. Add DNS records as required by Resend
+**ROOT CAUSE**: One of these Resend account limitations:
+1. **Sandbox Mode**: Free/testing accounts can only send to verified email addresses
+2. **Domain Not Verified**: Without domain verification, sending is restricted
+3. **API Key Issues**: Incorrect or limited API key permissions
+
+### IMMEDIATE SOLUTIONS
+
+#### Option 1: Upgrade Resend Account (RECOMMENDED)
+1. Go to [Resend Billing](https://resend.com/settings/billing)
+2. Upgrade from free/sandbox to a paid plan
+3. This removes the restriction to send only to your email address
+4. Emails will then be delivered to any client email address
+
+#### Option 2: Verify Your Domain
+1. Go to [Resend Domains](https://resend.com/domains)
+2. Add `brisclothing.com` domain
+3. Complete DNS verification process
+4. Update sender to `access@brisclothing.com`
+5. This allows sending from your branded domain
+
+#### Option 3: Check API Key
+1. Ensure you're using the correct production API key
+2. Verify the key has full sending permissions
+3. Update environment variables if needed
 
 ## 🧪 Testing Commands
+
+### Diagnose Resend Configuration
+```bash
+# Run comprehensive diagnostic
+node diagnose-resend-config.js
+```
+This will identify exactly why emails are going to your personal email instead of clients.
+
+### Test Client Email Delivery
+```bash
+# Test sending to multiple client email addresses
+node test-client-email.js
+```
+This verifies that emails are delivered to client addresses, not your personal email.
 
 ### Test Local Server
 ```bash
@@ -72,15 +104,15 @@ Currently only `godspeedbulldogs@gmail.com` can receive emails because:
 node local-server.js
 
 # Test API directly
-$body = @{email='godspeedbulldogs@gmail.com'} | ConvertTo-Json
+$body = @{email='client@example.com'} | ConvertTo-Json
 Invoke-RestMethod -Uri 'http://localhost:3001/api/send-access-email' -Method POST -Body $body -ContentType 'application/json'
 ```
 
 ### Test Production API
 ```bash
-# Test production endpoint (after deployment)
-$body = @{email='godspeedbulldogs@gmail.com'} | ConvertTo-Json
-Invoke-RestMethod -Uri 'https://your-domain.vercel.app/api/send-access-email' -Method POST -Body $body -ContentType 'application/json'
+# Test production endpoint with client email
+$body = @{email='client@example.com'} | ConvertTo-Json
+Invoke-RestMethod -Uri 'https://www.brisclothing.com/api/send-access-email' -Method POST -Body $body -ContentType 'application/json'
 ```
 
 ## 🔒 Security Features

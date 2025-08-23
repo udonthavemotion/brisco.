@@ -219,6 +219,9 @@ class BriscoCart {
         this.toggleCartDrawer();
       });
     }
+    
+    // Sticky cart scroll behavior for mobile
+    this.initStickyCartBehavior();
 
     // Cart close button
     const cartClose = document.querySelector('.cart-close');
@@ -320,6 +323,50 @@ class BriscoCart {
     console.log('Testing cart with product:', testProduct);
     this.addItem(testProduct);
     this.openCartDrawer();
+  }
+
+  // Sticky cart behavior for mobile scrolling
+  initStickyCartBehavior() {
+    const cartIcon = document.querySelector('.cart-icon.torch-cart');
+    if (!cartIcon) return;
+    
+    let ticking = false;
+    let lastScrollY = 0;
+    
+    const updateCartAppearance = () => {
+      const scrollY = window.scrollY;
+      const heroHeight = window.innerHeight * 0.8; // Approximate hero section height
+      
+      // Only apply sticky behavior on mobile/tablet
+      const isMobile = window.innerWidth <= 768;
+      
+      if (isMobile && scrollY > heroHeight) {
+        cartIcon.classList.add('scrolled');
+      } else {
+        cartIcon.classList.remove('scrolled');
+      }
+      
+      lastScrollY = scrollY;
+      ticking = false;
+    };
+    
+    const requestTick = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateCartAppearance);
+        ticking = true;
+      }
+    };
+    
+    // Throttled scroll listener
+    window.addEventListener('scroll', requestTick, { passive: true });
+    
+    // Handle resize to recalculate on orientation change
+    window.addEventListener('resize', () => {
+      setTimeout(updateCartAppearance, 100);
+    }, { passive: true });
+    
+    // Initial check
+    updateCartAppearance();
   }
 
   // Test pricing algorithm

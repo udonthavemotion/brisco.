@@ -1,10 +1,70 @@
-import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Resend with API key from environment variables
-const resendKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY || 're_9FU9EPTH_JNAbw7xJ3gRb9spgmE6Lm1dt';
-console.log('[BRISC API] Resend API key present:', !!(import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY));
-const resend = new Resend(resendKey);
+// Go High Level Configuration
+const GHL_WEBHOOK_URL = import.meta.env.GHL_WEBHOOK_URL || process.env.GHL_WEBHOOK_URL;
+const GHL_API_KEY = import.meta.env.GHL_API_KEY || process.env.GHL_API_KEY;
+
+console.log('[BRISC API] Using Go High Level for email delivery');
+console.log('[BRISC API] GHL Webhook URL present:', !!GHL_WEBHOOK_URL);
+console.log('[BRISC API] GHL API Key present:', !!GHL_API_KEY);
+
+// Fallback to Resend if GHL not configured (for transition period)
+let resend = null;
+const resendKey = import.meta.env.RESEND_API_KEY || process.env.RESEND_API_KEY;
+if (!GHL_WEBHOOK_URL && !GHL_API_KEY && resendKey) {
+  const { Resend } = await import('resend');
+  resend = new Resend(resendKey);
+  console.log('[BRISC API] Fallback: Using Resend (will be deprecated)');
+}
+
+// Go High Level Email Sending Function
+async function sendEmailViaGHL(email, accessCode = 'light2025') {
+  console.log(`[BRISC API] 🚀 Sending email via Go High Level to: ${email}`);
+  
+  if (GHL_WEBHOOK_URL) {
+    // Option 1: Webhook approach (easiest)
+    try {
+      const webhookPayload = {
+        email: email,
+        accessCode: accessCode,
+        timestamp: new Date().toISOString(),
+        source: 'brisc_website',
+        campaign: 'access_code_delivery'
+      };
+      
+      console.log('[BRISC API] Triggering GHL webhook...');
+      const response = await fetch(GHL_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(webhookPayload)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`GHL Webhook failed: ${response.status} ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      console.log('[BRISC API] ✅ GHL webhook triggered successfully:', result);
+      
+      return {
+        success: true,
+        provider: 'ghl_webhook',
+        messageId: result.id || 'webhook_triggered',
+        message: 'Email queued via Go High Level automation'
+      };
+      
+    } catch (error) {
+      console.error('[BRISC API] GHL Webhook error:', error);
+      throw error;
+    }
+  }
+  
+  throw new Error('No GHL configuration found (webhook URL required)');
+}
+
+console.log('[BRISC API] GHL email functions initialized');
 
 // Initialize Supabase client for lead capture
 const supabaseUrl = import.meta.env.SUPABASE_URL || process.env.SUPABASE_URL;
@@ -16,9 +76,6 @@ if (supabaseUrl && supabaseKey) {
   console.log('[BRISC API] Supabase initialized successfully');
 } else {
   console.warn('[BRISC API] Supabase credentials not found. Lead capture will be disabled.');
-  console.warn('[BRISC API] SUPABASE_URL present:', !!supabaseUrl);
-  console.warn('[BRISC API] SUPABASE_KEY present:', !!(import.meta.env.SUPABASE_KEY || process.env.SUPABASE_KEY));
-  console.warn('[BRISC API] SUPABASE_SERVICE_ROLE_KEY present:', !!(import.meta.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY));
 }
 
 export async function POST({ request }) {
@@ -42,7 +99,7 @@ export async function POST({ request }) {
       });
     }
 
-    console.log(`[BRISC API] Processing access request for: ${email} - v2.0`);
+    console.log(`[BRISC API] Processing access request for: ${email} - v3.0 (GHL Integration)`);
 
     // Step 1: Capture lead in Supabase (if configured)
     let leadCaptured = false;
@@ -60,13 +117,11 @@ export async function POST({ request }) {
           .select();
 
         if (leadError) {
-          // Handle duplicate email gracefully (unique constraint)
           if (leadError.code === '23505') {
             console.log(`[BRISC API] Email ${email} already exists in leads table`);
-            leadCaptured = true; // Still consider it captured
+            leadCaptured = true;
           } else {
             console.error('[BRISC API] Failed to capture lead:', leadError);
-            // Don't fail the email send if lead capture fails
           }
         } else {
           console.log(`[BRISC API] Lead captured successfully:`, leadResult[0]);
@@ -74,168 +129,61 @@ export async function POST({ request }) {
         }
       } catch (leadCaptureError) {
         console.error('[BRISC API] Lead capture error:', leadCaptureError);
-        // Continue with email send even if lead capture fails
       }
     }
 
-    // Step 2: Send access email via Resend
+    // Step 2: Send access email via Go High Level
     console.log(`[BRISC API] Sending access email to: ${email}`);
-
-    const { data, error } = await resend.emails.send({
-      from: 'BRISC Access <onboarding@resend.dev>', // Temporary - will switch to access@brisclothing.com after verification
-      to: [email],
-      subject: '🔥 Your BRISC Exclusive Access Code - Be Your Own Light',
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>BRISC Exclusive Access</title>
-          <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-          </style>
-        </head>
-        <body style="margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #000000 0%, #111111 100%); min-height: 100vh;">
-          <div style="max-width: 580px; margin: 0 auto; background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%); color: #ffffff; padding: 60px 30px; border: 1px solid #1a1a1a; box-shadow: 0 20px 60px rgba(0,0,0,0.8);">
-            
-            <!-- Exclusive Header -->
-            <div style="text-align: center; margin-bottom: 50px; position: relative;">
-              <div style="background: linear-gradient(45deg, #333333, #1a1a1a); width: 2px; height: 40px; margin: 0 auto 30px; opacity: 0.6;"></div>
-              
-              <img src="https://www.brisclothing.com/images/Product%20Assets/brevisidsg1.png" 
-                   alt="BRISC" 
-                   style="width: 120px; height: auto; margin-bottom: 25px; filter: brightness(1.1) contrast(1.2);" />
-              
-              <div style="background: linear-gradient(45deg, #333333, #1a1a1a); width: 2px; height: 40px; margin: 30px auto 0; opacity: 0.6;"></div>
-            </div>
-            
-            <!-- Exclusive Access Banner -->
-            <div style="text-align: center; margin-bottom: 50px; position: relative;">
-              <div style="background: linear-gradient(90deg, transparent, #333333, transparent); height: 1px; width: 100%; margin-bottom: 30px;"></div>
-              
-              <h1 style="color: #ffffff; font-size: 24px; margin: 0 0 15px 0; font-weight: 300; letter-spacing: 8px; text-transform: uppercase; opacity: 0.9;">
-                EXCLUSIVE
-              </h1>
-              <h2 style="color: #ffffff; font-size: 36px; margin: 0 0 20px 0; font-weight: 600; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(255,255,255,0.1);">
-                ACCESS GRANTED
-              </h2>
-              
-              <div style="background: linear-gradient(90deg, transparent, #333333, transparent); height: 1px; width: 100%; margin-top: 30px;"></div>
-            </div>
-            
-            <!-- Minimal Welcome Message -->
-            <div style="text-align: center; margin-bottom: 50px;">
-              <p style="color: #cccccc; font-size: 16px; line-height: 1.8; margin: 0; font-weight: 300; letter-spacing: 0.5px;">
-                You have been selected for exclusive access.<br>
-                <span style="color: #ffffff; font-weight: 500; font-size: 18px; letter-spacing: 1px;">Be Your Own Light.</span>
-              </p>
-            </div>
-            
-            <!-- Premium Access Code Box -->
-            <div style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%); border: 1px solid #333333; padding: 40px 30px; text-align: center; margin: 50px 0; border-radius: 2px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 10px 30px rgba(0,0,0,0.5); position: relative;">
-              <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 1px; background: linear-gradient(90deg, transparent, #666666, transparent);"></div>
-              
-              <p style="color: #888888; font-size: 11px; margin: 0 0 25px 0; text-transform: uppercase; letter-spacing: 2px; font-weight: 500;">
-                Access Code
-              </p>
-              <div style="font-size: 28px; font-weight: 600; color: #ffffff; letter-spacing: 6px; margin: 25px 0; font-family: 'Inter', monospace; text-shadow: 0 2px 10px rgba(255,255,255,0.2);">
-                light2025
-              </div>
-              <p style="color: #666666; font-size: 11px; margin: 25px 0 0 0; font-weight: 300; letter-spacing: 0.5px;">
-                Enter exactly as shown
-              </p>
-              
-              <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 1px; background: linear-gradient(90deg, transparent, #666666, transparent);"></div>
-            </div>
-            
-            <!-- Minimal Instructions -->
-            <div style="background: rgba(10,10,10,0.5); border: 1px solid #1a1a1a; padding: 30px; border-radius: 2px; margin: 40px 0; backdrop-filter: blur(10px);">
-              <div style="text-align: center; margin-bottom: 20px;">
-                <div style="width: 30px; height: 1px; background: #333333; margin: 0 auto;"></div>
-              </div>
-              
-              <div style="color: #cccccc; font-size: 14px; line-height: 2; text-align: center; font-weight: 300;">
-                <div style="margin-bottom: 12px; color: #ffffff; font-weight: 400;">01. Return to brisclothing.com</div>
-                <div style="margin-bottom: 12px;">02. Enter your access code</div>
-                <div>03. Experience the collection</div>
-              </div>
-              
-              <div style="text-align: center; margin-top: 20px;">
-                <div style="width: 30px; height: 1px; background: #333333; margin: 0 auto;"></div>
-              </div>
-            </div>
-            
-            <!-- Exclusive CTA -->
-            <div style="text-align: center; margin: 50px 0;">
-              <a href="https://www.brisclothing.com" 
-                 style="display: inline-block; background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); color: #000000; padding: 18px 45px; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 2px; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 8px 25px rgba(255,255,255,0.15); transition: all 0.3s ease;">
-                Enter
-              </a>
-            </div>
-            
-            <!-- Minimal Footer -->
-            <div style="text-align: center; margin-top: 60px; padding-top: 40px;">
-              <div style="background: linear-gradient(90deg, transparent, #333333, transparent); height: 1px; width: 100%; margin-bottom: 30px;"></div>
-              
-              <p style="color: #555555; font-size: 11px; margin: 0 0 8px 0; font-weight: 300; letter-spacing: 1px;">
-                BRISC
-              </p>
-              <p style="color: #444444; font-size: 10px; margin: 0; font-weight: 300; letter-spacing: 0.5px;">
-                Born in Thibodaux • Built for Leaders • Worn by Legends
-              </p>
-            </div>
-            
-          </div>
-        </body>
-        </html>
-      `,
-      // Plain text fallback
-      text: `
-BRISC EXCLUSIVE ACCESS
-
-Welcome to BRISC. You've been granted exclusive access to our latest collection.
-
-Your Access Code: light2025
-
-How to Access:
-1. Visit www.brisclothing.com
-2. Enter the access code: light2025
-3. Explore the exclusive BRISC collection
-
-Be Your Own Light.
-
----
-BRISC Streetwear
-Born in Thibodaux • Built for Leaders • Worn by Legends
-      `
-    });
-
-    if (error) {
-      console.error('[BRISC API] Resend error:', error);
+    console.log(`[BRISC API] Recipient email: ${email} (this should be the client's email, not yours)`);
+    
+    // Try Go High Level first (no restrictions!)
+    if (GHL_WEBHOOK_URL) {
+      try {
+        console.log('[BRISC API] 🚀 Using Go High Level for email delivery (UNLIMITED)');
+        const emailResult = await sendEmailViaGHL(email, 'light2025');
+        
+        console.log('[BRISC API] ✅ Email sent successfully via GHL:', emailResult);
+        
+        return new Response(JSON.stringify({ 
+          success: true, 
+          messageId: emailResult.messageId,
+          message: emailResult.message,
+          provider: emailResult.provider,
+          leadCaptured: leadCaptured,
+          supabaseConfigured: !!supabase
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+      } catch (ghlError) {
+        console.error('[BRISC API] GHL failed:', ghlError.message);
+        
+        return new Response(JSON.stringify({ 
+          error: 'Email service temporarily unavailable',
+          details: 'Please try again in a moment',
+          leadCaptured: leadCaptured,
+          supportMessage: 'If the issue persists, please contact support.'
+        }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    } else {
+      // No email service configured
+      console.error('[BRISC API] 🚨 CRITICAL: No email service configured');
+      console.error('[BRISC API] Please configure GHL_WEBHOOK_URL in environment variables');
+      
       return new Response(JSON.stringify({ 
-        error: 'Failed to send email', 
-        details: error.message,
+        error: 'Email service not configured',
+        details: 'Please contact support - email delivery system needs configuration',
         leadCaptured: leadCaptured,
-        resendError: error.message
+        supportMessage: 'The email service is currently being configured. Please try again in a few minutes.'
       }), {
-        status: 400,
+        status: 503,
         headers: { 'Content-Type': 'application/json' }
       });
     }
-
-    console.log('[BRISC API] Email sent successfully:', data);
-    
-    return new Response(JSON.stringify({ 
-      success: true, 
-      messageId: data.id,
-      message: 'Access email sent successfully',
-      leadCaptured: leadCaptured,
-      supabaseConfigured: !!supabase
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
 
   } catch (error) {
     console.error('[BRISC API] Server error:', error);

@@ -13,7 +13,7 @@ class BRISCAuthFlow {
     this.bindElements();
     this.setupEventListeners();
     this.checkExistingAccess();
-    this.showEmailStep();
+    this.checkDirectAccess();
   }
 
   bindElements() {
@@ -352,7 +352,7 @@ class BRISCAuthFlow {
       if (hoursElapsed < 24) {
         this.authContainer.style.display = 'none';
         this.showStore();
-        return;
+        return true;
       }
     }
     
@@ -360,6 +360,39 @@ class BRISCAuthFlow {
     sessionStorage.removeItem('brisco_access_granted');
     sessionStorage.removeItem('brisco_user_email');
     sessionStorage.removeItem('brisco_access_time');
+    return false;
+  }
+
+  checkDirectAccess() {
+    // If user already has valid access, don't show auth at all
+    if (this.checkExistingAccess()) {
+      return;
+    }
+
+    // Check for direct access parameter from email
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessParam = urlParams.get('access');
+    
+    if (accessParam === 'direct') {
+      console.log('[BRISC Auth] Direct access detected from email - skipping to password step');
+      
+      // Clear the URL parameter for cleaner experience
+      const url = new URL(window.location);
+      url.searchParams.delete('access');
+      window.history.replaceState({}, document.title, url.pathname + url.search);
+      
+      // Set a placeholder email for direct access
+      this.userEmail = 'direct-access@email.com';
+      
+      // Show password step directly
+      this.showPasswordStep();
+      
+      // Show helpful message
+      this.showToast('Enter the access code from your email', 'info');
+    } else {
+      // Normal flow - show email step
+      this.showEmailStep();
+    }
   }
 }
 
