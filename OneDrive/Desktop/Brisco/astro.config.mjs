@@ -5,7 +5,11 @@ import vercel from '@astrojs/vercel/serverless';
 export default defineConfig({
   output: 'hybrid', // Allow both static and server-side rendering
   adapter: vercel({
-    webAnalytics: { enabled: true }
+    webAnalytics: { enabled: true },
+    functionPerRoute: false,
+    edgeMiddleware: false,
+    // Explicitly set runtime to avoid conflicts
+    runtime: 'nodejs18.x'
   }),
   site: 'https://brisco.vercel.app', // Vercel production domain
   compressHTML: true,

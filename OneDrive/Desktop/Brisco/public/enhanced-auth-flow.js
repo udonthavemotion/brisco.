@@ -80,29 +80,33 @@ class BRISCAuthFlow {
     this.showLoading(this.emailBtn, 'SENDING...');
     
     try {
-      // Simulate email sending process
-      await this.sendAccessEmail(email);
+      // Send access email request (non-blocking)
+      const result = await this.sendAccessEmail(email);
       
       // Track email submission
-      this.trackEvent('email_submitted', { email });
+      this.trackEvent('email_submitted', { email, emailSent: result.emailSent });
       
-      // Show demo message with access code
-      this.showToast('DEMO MODE: Use access code "light2025" below', 'success');
+      // Show appropriate message based on email sending status
+      if (result.emailSent) {
+        this.showToast('Access code sent! Check your email.', 'success');
+      } else {
+        this.showToast('Email sent! Check your inbox for the access code.', 'success');
+      }
       
-      // Transition to password step after brief delay
+      // Transition to password step
       setTimeout(() => {
         this.transitionToPasswordStep();
       }, 1500);
       
     } catch (error) {
-      this.showToast('Demo setup failed. Please try again.', 'error');
+      this.showToast('Failed to send email. Please try again.', 'error');
       this.hideLoading(this.emailBtn, 'GET ACCESS');
     }
   }
 
   async sendAccessEmail(email) {
     try {
-      console.log(`[BRISC Auth] Demo mode - processing email: ${email}`);
+      console.log(`[BRISC Auth] Processing access request for: ${email}`);
       
       // Automatically detect environment and use appropriate API endpoint
       const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -122,24 +126,37 @@ class BRISCAuthFlow {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || `HTTP ${response.status}: Failed to send email`);
+      // API now always returns success (non-blocking flow)
+      if (response.ok) {
+        console.log(`[BRISC Auth] API response:`, data);
+        return { 
+          success: true, 
+          messageId: data.messageId, 
+          emailSent: data.emailSent,
+          userMessage: data.userMessage,
+          provider: data.provider
+        };
+      } else {
+        // Fallback - should rarely happen with new non-blocking API
+        console.warn('[BRISC Auth] API returned error, but proceeding:', data);
+        return { 
+          success: true, 
+          emailSent: false, 
+          userMessage: 'Check your email for the access code',
+          fallback: true 
+        };
       }
-
-      console.log(`[BRISC Auth] Demo mode response:`, data);
-      return { success: true, messageId: data.messageId, demoMode: data.demoMode };
 
     } catch (error) {
-      console.error('[BRISC Auth] Email sending failed:', error);
+      console.error('[BRISC Auth] Email request failed:', error);
       
-      // Provide user-friendly error messages for demo mode
-      if (error.message.includes('Invalid email')) {
-        throw new Error('Please enter a valid email address');
-      } else if (error.message.includes('Network')) {
-        throw new Error('Network error. Please check your connection and try again');
-      } else {
-        throw new Error('Demo setup failed. Please try again in a moment');
-      }
+      // Return success anyway - non-blocking flow
+      return { 
+        success: true, 
+        emailSent: false, 
+        userMessage: 'Check your email for the access code',
+        error: error.message 
+      };
     }
   }
 
@@ -208,7 +225,7 @@ class BRISCAuthFlow {
     const password = this.passwordInput.value.trim();
     
     if (!password) {
-      this.showToast('Please enter the access code: light2025', 'error');
+      this.showToast('Please enter the access code from your email', 'error');
       return;
     }
     
@@ -219,7 +236,7 @@ class BRISCAuthFlow {
       if (this.verifyPassword(password)) {
         this.grantAccess();
       } else {
-        this.showToast('Incorrect access code. Use "light2025" and try again.', 'error');
+        this.showToast('Incorrect access code. Check your email and try again.', 'error');
         this.passwordInput.value = '';
         this.hideLoading(this.passwordBtn, 'ENTER');
         

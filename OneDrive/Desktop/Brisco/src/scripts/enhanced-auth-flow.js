@@ -87,7 +87,7 @@ class BRISCAuthFlow {
       this.trackEvent('email_submitted', { email });
       
       // Show success message
-      this.showToast('Access credentials sent to your email.', 'success');
+      this.showToast('Access code sent! Check your email.', 'success');
       
       // Transition to password step after brief delay
       setTimeout(() => {
@@ -208,7 +208,7 @@ class BRISCAuthFlow {
     const password = this.passwordInput.value.trim();
     
     if (!password) {
-      this.showToast('Please enter the password from your email', 'error');
+      this.showToast('Please enter the access code from your email', 'error');
       return;
     }
     
@@ -219,7 +219,7 @@ class BRISCAuthFlow {
       if (this.verifyPassword(password)) {
         this.grantAccess();
       } else {
-        this.showToast('Incorrect password. Check your email and try again.', 'error');
+        this.showToast('Incorrect access code. Check your email and try again.', 'error');
         this.passwordInput.value = '';
         this.hideLoading(this.passwordBtn, 'ENTER');
         
